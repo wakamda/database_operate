@@ -8,21 +8,22 @@
 
 #include<iostream>
 #include<string>
-#include "../mysql_include/mysql.h"
-#include "../../basic/Datatype.h"
+#include "../basic/Basic_db.h"
+#include "../common/mysql_include/mysql.h"
+#include "../common/Datatype.h"
 
 using namespace std;
 
-class Ctmysql
+class Ctmysql :public Basic_db
 {
     public:
 
     //init mysql
-    Ctmysql();
-    ~Ctmysql();
+    ERR_CODE Init();
+    ERR_CODE Finit();
 
     //connect mysql
-    ERR_CODE connectmysql(const char* host,const char* user,const char* pwd,const char* db_name);
+    ERR_CODE connectdb(const char* host,const char* user,const char* pwd,const char* db_name);
 
     //exec SQL(can not parse sql with bin sql)
     bool execSQL(const char*sql, unsigned long sqllen = 0);
@@ -46,8 +47,8 @@ class Ctmysql
     
     private:
     MYSQL *mysql;          //连接mysql句柄指针
-    MYSQL_RES *result;    //指向查询结果的指针
-    MYSQL_ROW row;       //按行返回的查询信息
+    MYSQL_RES *result;    //指向查询结果的指�?
+    MYSQL_ROW row;       //按行返回的查询信�?
 };
 
 

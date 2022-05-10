@@ -9,29 +9,31 @@
 
 using namespace std;
 
-Ctmysql::Ctmysql()
+ERR_CODE Ctmysql::Init()
 {
-    //create a new mysql object
     mysql=mysql_init(NULL);   
     if(mysql==NULL)
     {
         cout<<"Error:"<<mysql_error(mysql);
-        exit(1);
+        return ERR_FAILED;
     }
+    return ERR_SUCCESS;
 }
 
-Ctmysql::~Ctmysql()
+ERR_CODE Ctmysql::Finit()
 {
-    //close mysql object
     if(mysql!=NULL)  
     {
         mysql_close(mysql);
+        mysql = NULL;
+        return ERR_SUCCESS;
     }
+    return ERR_FAILED;
 }
 
-ERR_CODE Ctmysql::connectmysql(const char* host,const char* user,const char* passwd,const char* db_name)
+ERR_CODE Ctmysql::connectdb(const char* host,const char* user,const char* passwd,const char* db_name)
 { 
-    mysql = mysql_real_connect(mysql, host, user, passwd, db_name, 0, NULL, 0);  
+    mysql = mysql_real_connect(mysql, host, user, passwd, db_name, 3306, NULL, 0);  
     if(mysql == NULL)  
     {  
         cout << "Error: " << mysql_error(mysql);  
@@ -49,7 +51,7 @@ bool Ctmysql::execSQL(const char*sql, unsigned long sqllen)
 		cout<< "Query sql is empty or wrong format!" ;
 		return false;
 	}
-    //mysql_query()执行成功返回0,执行失败返回非0值。
+    //mysql_query()执行成功返回0,执行失败返回�?0值�?
     int re =mysql_real_query(mysql, sql, sqllen);
     if (re != 0)
     {
@@ -77,15 +79,15 @@ ERR_CODE Ctmysql::createdatabase(std::string &dbname){
 }
 
 ERR_CODE Ctmysql::deletedatabase(std::string &dbname){
-
+    return ERR_SUCCESS;
 }
 
 ERR_CODE Ctmysql::createtable(TABLEVECTOR &vector,std::string &tablename, TABLE_TYPE tabletype){
-
+    return ERR_SUCCESS;
 }
 
 ERR_CODE Ctmysql::deletetable(std::string &tablename){
-
+    return ERR_SUCCESS;
 }
 
 /********************************data-insert****************************************/

@@ -6,15 +6,34 @@
 #ifndef _CTMYSQL_API_H
 #define _CTMYSQL_API_H
 
-#include "../basic/Datatype.h"
+#include "../common/Datatype.h"
 
 typedef  void* TMYSQL_HANDLE;
+
+/**
+ * @brief create a instance for mysql
+ * 
+ */
+TMYSQL_HANDLE sdk_createinstance();
+
+
+/**
+ * @brief init db
+ * 
+ */
+ERR_CODE Init(void);
+
+/**
+ * @brief Finit db
+ * 
+ */
+ERR_CODE Finit(void);
 
 /**
  * @brief mysql connect action.
  * @return ERR_CODE 
  */
-ERR_CODE sdk_connectmysql(TMYSQL_HANDLE handle,const char* host,const char* user,const char* pwd,const char* db_name);
+ERR_CODE sdk_connectdb(TMYSQL_HANDLE handle,const char* host,const char* user,const char* pwd,const char* db_name);
 
 /**
  * @brief database create

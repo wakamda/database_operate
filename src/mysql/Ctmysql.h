@@ -6,8 +6,7 @@
 #ifndef _CTMYSQL_H
 #define _CTMYSQL_H
 
-#include<iostream>
-#include<string>
+#include <iostream>
 #include "../basic/Basic_db.h"
 #include "../common/mysql_include/mysql.h"
 #include "../common/Datatype.h"
@@ -17,38 +16,109 @@ using namespace std;
 class Ctmysql :public Basic_db
 {
     public:
+    Ctmysql() {};
+/************************************************************************
+ *  config
+************************************************************************/
 
-    //init mysql
+    //create instance
     ERR_CODE Init();
     ERR_CODE Finit();
 
     //connect mysql
-    ERR_CODE connectdb(const char* host,const char* user,const char* pwd,const char* db_name);
+    ERR_CODE connectdb(const char* host,const char* user,const char* pwd,const char* db_name,unsigned short port,unsigned long flag);
+    
+    //Set the database encoding format
+    ERR_CODE SwitchDBType(TABLE_CODING_TYPE type);
 
-    //exec SQL(can not parse sql with bin sql)
-    bool execSQL(const char*sql, unsigned long sqllen = 0);
+    //Set additional connection options in mysql
+    ERR_CODE SetMysqlOption(MSQL_OPT opt,const void *arg);
+
+    //Set the connect timeout seconds
+    ERR_CODE SetConnectTimeout(int sec);
+
+    //Automatic reconnection, not automatic by default
+    ERR_CODE SetReconnect(bool isre);
+
+    char * Gethost();
+    char * Sethost(char* newVal);
+    char* Getuser();
+    char* Setuser(char* newVal);
+    char* Getpwd();
+    char* Setpwd(char* newVal);
+    char* Getdbname();
+    char* Setdbname(char* newVal);
+    unsigned short Getport();
+    unsigned short Setport(unsigned short newVal);
+    unsigned long Getflag();
+    unsigned long Setflag(unsigned long newVal);
+
+/************************************************************************
+ *  operation
+************************************************************************/
+
+    //Query SQL(can not parse sql with bin sql)
+    bool Query(const char*sql, unsigned long sqllen = 0);
     
     //database
     ERR_CODE createdatabase(std::string &dbname);
     ERR_CODE deletedatabase(std::string &dbname);
 
     //table
-    ERR_CODE createtable(TABLEVECTOR &vector,std::string &tablename, TABLE_TYPE tabletype);
+    ERR_CODE createtable(TABLEVECTOR &vector,std::string &tablename, TABLE_CODING_TYPE tablecodingtype);
     ERR_CODE deletetable(std::string &tablename);
 
-    /********************************data-insert****************************************/
+    //data insert 
+    ERR_CODE Insert(TableDataMap &da, std::string &tablename);
 
-    /********************************data-delete****************************************/
+    //data delete with id
+    ERR_CODE DeleteDataWithId(std::string &tablename, std::string &idname, std::string &idnum);
 
-    /********************************data-update****************************************/
+    //delete data where fieldname like ...
+    ERR_CODE DeleteDataLikeWithFieldname(std::string &tablename, std::string &fieldname, std::string &fielddata);
 
-    /********************************data-select****************************************/
-    //ERR_CODE selectdata(std::string &tablename);
+    //update data
+    uint64_t UpdateData(TableDataMap &da, std::string &tablename, std::string &where, std::string &idnum);
+
+    //select table
+    ERR_CODE SelectTable(std::string &tablename);
+
+    //select data where like...
+    ERR_CODE SelectDataWithX(std::string &tablename, std::string &fieldname, std::string &fielddata);
+
+    //select data returns all results
+	ERR_CODE StoreResult();
+
+    //Start receiving results, Fetch via Fetch
+	ERR_CODE UseResult();
+
+    //Frees the space occupied by the result set
+    ERR_CODE FreeResult();
+
+    //receive a row data
+    ROW FetchRow();
+ 
+     
+/***********************************************************************
+ * underlying operation
+************************************************************************/
+private:
+    //set the table field type string accroding to the TABLE_FIELD_TYPE
+    std::string GetTableFieldTypeString(TABLE_FIELD_TYPE gbkorutf);
+
+    //autogen sql to create table
+    std::string GetAutogenCreateSql(LPTABLESTRUCT pfield);
+
+    //auto gen sql to insert data in table
+    std::string GetAutogenInsertSql(TableDataMap &da, std::string &tablename);
+
+    //auto gen sql to update data in table
+    std::string GetAutogenUpdateSql(TableDataMap &da, std::string &tablename, std::string &where, std::string &idnum);
     
-    private:
-    MYSQL *mysql;          //连接mysql句柄指针
-    MYSQL_RES *result;    //指向查询结果的指�?
-    MYSQL_ROW row;       //按行返回的查询信�?
+    
+    MYSQL *mysql;      //connect mysql pointer 
+    MYSQL_RES *result; //result pointer
+    MYSQL_ROW row;     //result of select data
 };
 
 

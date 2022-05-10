@@ -6,9 +6,51 @@
 #ifndef _DATATYPE_H
 #define _DATATYPE_H
 
-#include <string>
-#include <string.h>
-#include <vector>
+#include "DBDataType.h"
+#include "DBTableType.h"
+
+enum MSQL_OPT {
+	MSQL_OPT_CONNECT_TIMEOUT,
+	MSQL_OPT_COMPRESS,
+	MSQL_OPT_NAMED_PIPE,
+	MSQL_INIT_COMMAND,
+	MSQL_READ_DEFAULT_FILE,
+	MSQL_READ_DEFAULT_GROUP,
+	MSQL_SET_CHARSET_DIR,
+	MSQL_SET_CHARSET_NAME,
+	MSQL_OPT_LOCAL_INFILE,
+	MSQL_OPT_PROTOCOL,
+	MSQL_SHARED_MEMORY_BASE_NAME,
+	MSQL_OPT_READ_TIMEOUT,
+	MSQL_OPT_WRITE_TIMEOUT,
+	MSQL_OPT_USE_RESULT,
+	MSQL_REPORT_DATA_TRUNCATION,
+	MSQL_OPT_RECONNECT,
+	MSQL_PLUGIN_DIR,
+	MSQL_DEFAULT_AUTH,
+	MSQL_OPT_BIND,
+	MSQL_OPT_SSL_KEY,
+	MSQL_OPT_SSL_CERT,
+	MSQL_OPT_SSL_CA,
+	MSQL_OPT_SSL_CAPATH,
+	MSQL_OPT_SSL_CIPHER,
+	MSQL_OPT_SSL_CRL,
+	MSQL_OPT_SSL_CRLPATH,
+	MSQL_OPT_CONNECT_ATTR_RESET,
+	MSQL_OPT_CONNECT_ATTR_ADD,
+	MSQL_OPT_CONNECT_ATTR_DELETE,
+	MSQL_SERVER_PUBLIC_KEY,
+	MSQL_ENABLE_CLEARTEXT_PLUGIN,
+	MSQL_OPT_CAN_HANDLE_EXPIRED_PASSWORDS,
+	MSQL_OPT_MAX_ALLOWED_PACKET,
+	MSQL_OPT_NET_BUFFER_LENGTH,
+	MSQL_OPT_TLS_VERSION,
+	MSQL_OPT_SSL_MODE,
+	MSQL_OPT_GET_SERVER_PUBLIC_KEY,
+	MSQL_OPT_RETRY_COUNT,
+	MSQL_OPT_OPTIONAL_RESULTSET_METADATA,
+	MSQL_OPT_SSL_FIPS_MODE
+};
 
 // error number
 typedef enum{
@@ -19,31 +61,13 @@ typedef enum{
     ERR_INVALID_DATA
 }ERR_CODE;
 
-/***********table************/
-// table data type
-enum TABLE_DATA_TYPE{
-    _INT = 0,
-    _VARCHAR
+//printf error number
+static const char* str_err_code[30] ={
+    "ERR_SUCCESS",
+    "ERR_FAILED",
+    "ERR_UNSUPPORT_CONNAND",
+    "ERR_INVALID_ARG",
+    "ERR_INVALID_DATA"
 };
-
-//table type
-typedef enum{
-    UTF8 = 0,
-    GBK,
-    NOTYPE
-}TABLE_TYPE;
-
-//table config
-typedef struct{
-    std::string fieldname;
-    TABLE_DATA_TYPE data_type;
-    TABLE_TYPE table_type;
-    int len = 0;
-}TABLESTRUCT, *LPTABLESTRUCT;
-
-//table constrcuction used for create table
-typedef std::vector<TABLESTRUCT>   TABLEVECTOR;
-
-/***********table************/
 
 #endif 

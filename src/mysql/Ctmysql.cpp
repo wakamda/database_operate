@@ -417,9 +417,9 @@ ROW Ctmysql::FetchRow(){
 	printf("return success");
 	return re;
 }
-
+//简易接口,返回select的数据结果，每次调用清理上一次的结果集
 ERR_CODE Ctmysql::EasySelect(std::string &tablename, ROWS &rows){
-	if (tablename.empty() || !(&rows))
+	if (tablename.empty())
 	{
 		printf("return %s", str_err_code[ERR_INVALID_ARG]);
 		return ERR_INVALID_ARG;
@@ -441,7 +441,7 @@ ERR_CODE Ctmysql::EasySelect(std::string &tablename, ROWS &rows){
 }
 
 ERR_CODE Ctmysql::EasyLike(std::string &tablename, std::string &fieldname,std::string &fielddata, ROWS &rows){
-	if (tablename.empty() || fieldname.empty() || fielddata.empty() || !(&rows))
+	if (tablename.empty() || fieldname.empty() || fielddata.empty())
 	{
 		printf("return %s", str_err_code[ERR_INVALID_ARG]);
 		return ERR_INVALID_ARG;

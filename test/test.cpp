@@ -1,5 +1,6 @@
 #include "../src/api/DB_sdk_api.h"
 #include <iostream>
+#include <unistd.h>
 
 using namespace std;
 static TMYSQL_HANDLE _handle_ = NULL;
@@ -10,7 +11,7 @@ bool sdkInit(){
     char arr_host[20]= "localhost";
     char arr_usr[20]= "root";
     char arr_pwd[20]= "123456";
-    char arr_dbname[20]="test_sdk";
+    char arr_dbname[20]="mysql";
     ERR_CODE ret = sdk_connectdb(_handle_,sdk_Sethost(_handle_,arr_host),sdk_Setuser(_handle_,arr_usr),sdk_Setpwd(_handle_,arr_pwd),sdk_Setdbname(_handle_,arr_dbname),sdk_Setport(_handle_,3306),sdk_Setflag(_handle_,0));
     if(ret == ERR_SUCCESS){
         cout << "connect mysql success!" << endl;
@@ -114,7 +115,7 @@ void updatedata()
 	k2["fieldata"] = szbufp;
 	k2["shuoming"] = "shuoming111";
 	k2["shuoming2"] = "shuoming222";
-	uint64_t ret = sdk_UpdateData(_handle_, k2, "testtable", "Num", "9");
+	uint64_t ret = sdk_UpdateData(_handle_, k2, "testtable", "ID", "9");
 	
 	sdk_SelectTable(_handle_, "testtable");
 	sdk_StoreResult(_handle_);
@@ -137,7 +138,7 @@ void updatedata()
 	if (ret > 0)
 	{
 		cout << "*********************************update data success*********************************" << endl;
-		cout << "*********************************I change the date in Num9*********************************" << endl;
+		cout << "*********************************I change the date in ID9*********************************" << endl;
 	}
 	else
 	{
@@ -182,7 +183,9 @@ int main(){
 
     create_table();
     insertdata();
-    //updatedata();
+	cout << "wait a while , will update a field data << endl" ;
+	sleep(3);
+    updatedata();
     sdk_Finit(_handle_);
 
     return 0;

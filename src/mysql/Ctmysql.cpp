@@ -214,7 +214,7 @@ ERR_CODE Ctmysql::deletedatabase(std::string &dbname){
         cout << "return" << str_err_code[ERR_INVALID_ARG] << endl;
         return ERR_INVALID_ARG;
     }
-    std::string queryStr = "drop database `"+dbname+"`";
+    std::string queryStr = "drop database if exists `"+dbname+"`";
     if(Query(queryStr.c_str(),0))
     {
         cout << "delete database " << dbname.c_str() << "success!" << endl;

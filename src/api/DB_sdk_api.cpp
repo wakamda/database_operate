@@ -119,6 +119,11 @@ ERR_CODE sdk_createdatabase(TMYSQL_HANDLE handle,std::string dbname){
     return ((Basic_db*)handle)->createdatabase(dbname);
 }
 
+ERR_CODE sdk_deletedatabase(TMYSQL_HANDLE handle,std::string dbname){
+    CHECKHANDLE(handle);
+    return ((Basic_db*)handle)->deletedatabase(dbname);
+}
+
 ERR_CODE sdk_createtable(TMYSQL_HANDLE handle,TABLEVECTOR &vector,std::string tablename, TABLE_CODING_TYPE tablecodingtype){
     CHECKHANDLE(handle);
     return ((Basic_db*)handle)->createtable(vector, tablename, tablecodingtype);
@@ -174,7 +179,8 @@ ERR_CODE sdk_FreeResult(TMYSQL_HANDLE handle){
     return ((Basic_db*)handle)->FreeResult();
 }
 
-ROW sdk_FetchRow(TMYSQL_HANDLE handle){
+ROW sdk_FetchRow(TMYSQL_HANDLE handle, ROW &row){
+    CHECKHANDLE(handle);
     return ((Basic_db*)handle)->FetchRow();
 }
 

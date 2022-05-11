@@ -9,7 +9,6 @@
 #include <iostream>
 #include "../basic/Basic_db.h"
 #include "../common/mysql_include/mysql.h"
-#include "../common/Datatype.h"
 
 using namespace std;
 

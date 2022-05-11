@@ -210,6 +210,15 @@ bool sdk_Query(TMYSQL_HANDLE handle,const char*sql, unsigned long sqllen = 0);
 ERR_CODE sdk_createdatabase(TMYSQL_HANDLE handle,std::string dbname);
 
 /**
+ * @brief delete database
+ * 
+ * @param handlestd 
+ * @param dbname 
+ * @return ERR_CODE 
+ */
+ERR_CODE sdk_deletedatabase(TMYSQL_HANDLE handle,std::string dbname);
+
+/**
  * @brief create table
  * 
  * @param handle 
@@ -323,7 +332,7 @@ ERR_CODE sdk_FreeResult(TMYSQL_HANDLE handle);
  * @param handle 
  * @return ROW 
  */
-ROW sdk_FetchRow(TMYSQL_HANDLE handle);
+ROW sdk_FetchRow(TMYSQL_HANDLE handle, ROW &row);
 
 /**
  * @brief Simple interface, return select data results, each call to clean up the last result set

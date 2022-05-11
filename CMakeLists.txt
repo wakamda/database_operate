@@ -15,11 +15,11 @@ target_link_libraries(db_sdk mysqlclient)
 
 #build exe
  
-#set(LIB_OUT_DOR ${PROJECT_SOURCE_DIR}/../build)
-#link_directories(${LIB_OUT_DOR})
-#include_directories(./src)
-#set(source_file test/test.cpp)
-#add_executable(test ${source_file})
-#
-#target_link_libraries(test db_sdk)
+set(LIB_OUT_DOR ${PROJECT_SOURCE_DIR}/../build)
+link_directories(${LIB_OUT_DOR})
+include_directories(./src)
+set(source_file test/test.cpp)
+add_executable(test ${source_file})
+
+target_link_libraries(test db_sdk)
 

@@ -207,7 +207,7 @@ bool sdk_Query(TMYSQL_HANDLE handle,const char*sql, unsigned long sqllen = 0);
  * @param dbname 
  * @return ERR_CODE 
  */
-ERR_CODE sdk_createdatabase(TMYSQL_HANDLE handle,std::string &dbname);
+ERR_CODE sdk_createdatabase(TMYSQL_HANDLE handle,std::string dbname);
 
 /**
  * @brief create table
@@ -218,7 +218,7 @@ ERR_CODE sdk_createdatabase(TMYSQL_HANDLE handle,std::string &dbname);
  * @param tablecodingtype 
  * @return ERR_CODE 
  */
-ERR_CODE sdk_createtable(TMYSQL_HANDLE handle,TABLEVECTOR &vector,std::string &tablename, TABLE_CODING_TYPE tablecodingtype = UTF8);
+ERR_CODE sdk_createtable(TMYSQL_HANDLE handle,TABLEVECTOR &vector,std::string tablename, TABLE_CODING_TYPE tablecodingtype = UTF8);
 
 /**
  * @brief delete table
@@ -227,7 +227,7 @@ ERR_CODE sdk_createtable(TMYSQL_HANDLE handle,TABLEVECTOR &vector,std::string &t
  * @param tablename 
  * @return ERR_CODE 
  */
-ERR_CODE sdk_deletetable(TMYSQL_HANDLE handle,std::string &tablename);
+ERR_CODE sdk_deletetable(TMYSQL_HANDLE handle,std::string tablename);
 
 /**
  * @brief data insert 
@@ -237,7 +237,7 @@ ERR_CODE sdk_deletetable(TMYSQL_HANDLE handle,std::string &tablename);
  * @param tablename 
  * @return ERR_CODE 
  */
-ERR_CODE sdk_Insert(TMYSQL_HANDLE handle,TableDataMap &da, std::string &tablename);
+ERR_CODE sdk_Insert(TMYSQL_HANDLE handle,TableDataMap &da, std::string tablename);
 
 /**
  * @brief data delete with id
@@ -248,7 +248,7 @@ ERR_CODE sdk_Insert(TMYSQL_HANDLE handle,TableDataMap &da, std::string &tablenam
  * @param idnum 
  * @return RR_CODE 
  */
-ERR_CODE sdk_DeleteDataWithId(TMYSQL_HANDLE handle,std::string &tablename, std::string &idname, std::string &idnum);
+ERR_CODE sdk_DeleteDataWithId(TMYSQL_HANDLE handle,std::string tablename, std::string idname, std::string idnum);
 
 /**
  * @brief delete data where fieldname like ...
@@ -259,7 +259,7 @@ ERR_CODE sdk_DeleteDataWithId(TMYSQL_HANDLE handle,std::string &tablename, std::
  * @param fielddata 
  * @return ERR_CODE 
  */
-ERR_CODE sdk_DeleteDataLikeWithFieldname(TMYSQL_HANDLE handle,std::string &tablename, std::string &fieldname, std::string &fielddata);
+ERR_CODE sdk_DeleteDataLikeWithFieldname(TMYSQL_HANDLE handle,std::string tablename, std::string fieldname, std::string fielddata);
 
 /**
  * @brief update data
@@ -271,7 +271,7 @@ ERR_CODE sdk_DeleteDataLikeWithFieldname(TMYSQL_HANDLE handle,std::string &table
  * @param idnum 
  * @return UINT64 
  */
-uint64_t sdk_UpdateData(TMYSQL_HANDLE handle,TableDataMap &da, std::string &tablename, std::string &where, std::string &idnum);
+uint64_t sdk_UpdateData(TMYSQL_HANDLE handle,TableDataMap &da, std::string tablename, std::string where, std::string idnum);
 
 /**
  * @brief select table
@@ -280,7 +280,7 @@ uint64_t sdk_UpdateData(TMYSQL_HANDLE handle,TableDataMap &da, std::string &tabl
  * @param tablename 
  * @return ERR_CODE 
  */
-ERR_CODE sdk_SelectTable(TMYSQL_HANDLE handle,std::string &tablename);
+ERR_CODE sdk_SelectTable(TMYSQL_HANDLE handle,std::string tablename);
 
 /**
  * @brief select data where like...
@@ -291,7 +291,7 @@ ERR_CODE sdk_SelectTable(TMYSQL_HANDLE handle,std::string &tablename);
  * @param fielddata 
  * @return ERR_CODE 
  */
-ERR_CODE sdk_SelectDataWithX(TMYSQL_HANDLE handle,std::string &tablename, std::string &fieldname, std::string &fielddata);
+ERR_CODE sdk_SelectDataWithX(TMYSQL_HANDLE handle,std::string tablename, std::string fieldname, std::string fielddata);
 
 /**
  * @brief select data returns all results
@@ -325,8 +325,27 @@ ERR_CODE sdk_FreeResult(TMYSQL_HANDLE handle);
  */
 ROW sdk_FetchRow(TMYSQL_HANDLE handle);
 
+/**
+ * @brief Simple interface, return select data results, each call to clean up the last result set
+ * 
+ * @param handle 
+ * @param tablename 
+ * @param rows 
+ * @return ERR_CODE 
+ */
+ERR_CODE sdk_EasySelect(TMYSQL_HANDLE handle,std::string tablename, ROWS &rows);
 
-
+/**
+ * @brief Simple interface, fuzzy search
+ * 
+ * @param handle 
+ * @param tablename 
+ * @param fieldname 
+ * @param fielddata 
+ * @param rows 
+ * @return ERR_CODE 
+ */
+ERR_CODE sdk_EasyLike(TMYSQL_HANDLE handle,std::string tablename, std::string fieldname,std::string fielddata, ROWS &rows);
 
 
 

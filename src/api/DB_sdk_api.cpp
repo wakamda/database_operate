@@ -114,47 +114,47 @@ bool sdk_Query(TMYSQL_HANDLE handle,const char* sql, unsigned long sqllen){
     return ((Basic_db*)handle)->Query(sql,sqllen);
 }
 
-ERR_CODE sdk_createdatabase(TMYSQL_HANDLE handle,std::string &dbname){
+ERR_CODE sdk_createdatabase(TMYSQL_HANDLE handle,std::string dbname){
     CHECKHANDLE(handle);
     return ((Basic_db*)handle)->createdatabase(dbname);
 }
 
-ERR_CODE sdk_createtable(TMYSQL_HANDLE handle,TABLEVECTOR &vector,std::string &tablename, TABLE_CODING_TYPE tablecodingtype){
+ERR_CODE sdk_createtable(TMYSQL_HANDLE handle,TABLEVECTOR &vector,std::string tablename, TABLE_CODING_TYPE tablecodingtype){
     CHECKHANDLE(handle);
     return ((Basic_db*)handle)->createtable(vector, tablename, tablecodingtype);
 }
 
-ERR_CODE sdk_deletetable(TMYSQL_HANDLE handle,std::string &tablename){
+ERR_CODE sdk_deletetable(TMYSQL_HANDLE handle,std::string tablename){
     CHECKHANDLE(handle);
     return ((Basic_db*)handle)->deletetable(tablename);
 }
 
-ERR_CODE sdk_Insert(TMYSQL_HANDLE handle,TableDataMap &da, std::string &tablename){
+ERR_CODE sdk_Insert(TMYSQL_HANDLE handle,TableDataMap &da, std::string tablename){
     CHECKHANDLE(handle);
     return ((Basic_db*)handle)->Insert(da,tablename);
 }
 
-ERR_CODE sdk_DeleteDataWithId(TMYSQL_HANDLE handle,std::string &tablename, std::string &idname, std::string &idnum){
+ERR_CODE sdk_DeleteDataWithId(TMYSQL_HANDLE handle,std::string tablename, std::string idname, std::string idnum){
     CHECKHANDLE(handle);
     return ((Basic_db*)handle)->DeleteDataWithId(tablename,idname,idnum);
 }
 
-ERR_CODE sdk_DeleteDataLikeWithFieldname(TMYSQL_HANDLE handle,std::string &tablename, std::string &fieldname, std::string &fielddata){
+ERR_CODE sdk_DeleteDataLikeWithFieldname(TMYSQL_HANDLE handle,std::string tablename, std::string fieldname, std::string fielddata){
     CHECKHANDLE(handle);
     return ((Basic_db*)handle)->DeleteDataLikeWithFieldname(tablename,fieldname,fielddata);
 }
 
-uint64_t sdk_UpdateData(TMYSQL_HANDLE handle,TableDataMap &da, std::string &tablename, std::string &where, std::string &idnum){
+uint64_t sdk_UpdateData(TMYSQL_HANDLE handle,TableDataMap &da, std::string tablename, std::string where, std::string idnum){
     CHECKHANDLE(handle);
     return ((Basic_db*)handle)->UpdateData(da,tablename,where,idnum);
 }
 
-ERR_CODE sdk_SelectTable(TMYSQL_HANDLE handle,std::string &tablename){
+ERR_CODE sdk_SelectTable(TMYSQL_HANDLE handle,std::string tablename){
     CHECKHANDLE(handle);
     return ((Basic_db*)handle)->SelectTable(tablename);
 }
 
-ERR_CODE sdk_SelectDataWithX(TMYSQL_HANDLE handle,std::string &tablename, std::string &fieldname, std::string &fielddata){
+ERR_CODE sdk_SelectDataWithX(TMYSQL_HANDLE handle,std::string tablename, std::string fieldname, std::string fielddata){
     CHECKHANDLE(handle);
     return ((Basic_db*)handle)->SelectDataWithX(tablename,fieldname,fielddata);
 }
@@ -176,4 +176,14 @@ ERR_CODE sdk_FreeResult(TMYSQL_HANDLE handle){
 
 ROW sdk_FetchRow(TMYSQL_HANDLE handle){
     return ((Basic_db*)handle)->FetchRow();
+}
+
+ERR_CODE sdk_EasySelect(TMYSQL_HANDLE handle,std::string tablename, ROWS &rows){
+    CHECKHANDLE(handle);
+    return ((Basic_db*)handle)->EasySelect(tablename,rows);
+}
+
+ERR_CODE sdk_EasyLike(TMYSQL_HANDLE handle,std::string tablename, std::string fieldname,std::string fielddata, ROWS &rows){
+    CHECKHANDLE(handle);
+    return ((Basic_db*)handle)->EasyLike(tablename,fieldname,fielddata,rows);
 }

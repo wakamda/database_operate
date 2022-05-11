@@ -117,7 +117,7 @@ void updatedata()
 	k2["shuoming2"] = "shuoming222";
 	uint64_t ret = sdk_UpdateData(_handle_, k2, "testtable", "ID", "9");
 	
-	sdk_SelectTable(_handle_, "testtable");
+	sdk_SelectFromTable(_handle_, "testtable");
 	sdk_StoreResult(_handle_);
 	while (true)
 	{

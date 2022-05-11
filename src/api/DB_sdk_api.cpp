@@ -154,9 +154,9 @@ uint64_t sdk_UpdateData(TMYSQL_HANDLE handle,TableDataMap &da, std::string table
     return ((Basic_db*)handle)->UpdateData(da,tablename,where,idnum);
 }
 
-ERR_CODE sdk_SelectTable(TMYSQL_HANDLE handle,std::string tablename){
+ERR_CODE sdk_SelectFromTable(TMYSQL_HANDLE handle,std::string tablename){
     CHECKHANDLE(handle);
-    return ((Basic_db*)handle)->SelectTable(tablename);
+    return ((Basic_db*)handle)->SelectFromTable(tablename);
 }
 
 ERR_CODE sdk_SelectDataWithX(TMYSQL_HANDLE handle,std::string tablename, std::string fieldname, std::string fielddata){

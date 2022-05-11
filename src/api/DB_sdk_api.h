@@ -289,7 +289,7 @@ uint64_t sdk_UpdateData(TMYSQL_HANDLE handle,TableDataMap &da, std::string table
  * @param tablename 
  * @return ERR_CODE 
  */
-ERR_CODE sdk_SelectTable(TMYSQL_HANDLE handle,std::string tablename);
+ERR_CODE sdk_SelectFromTable(TMYSQL_HANDLE handle,std::string tablename);
 
 /**
  * @brief select data where like...

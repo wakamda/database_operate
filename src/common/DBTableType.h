@@ -118,4 +118,7 @@ typedef struct{
 //table constrcuction used for create table
 typedef std::vector<TABLESTRUCT>   TABLEVECTOR;
 
+//数据列表, 在使用简易查询接口时会一次性获取所有查询的数据。容器内元素为数据库内的一行数据
+typedef std::vector<ROW>					ROWS;
+
 #endif //_DBTABLETYPE_H_

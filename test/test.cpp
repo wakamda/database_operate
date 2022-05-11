@@ -4,68 +4,33 @@
 using namespace std;
 static TMYSQL_HANDLE _handle_ = NULL;
 
-void testInit(){
-
+bool sdkInit(){
     _handle_ = sdk_Init();
-
-    democonncet:
-    //char  host[20] = { 0 };
-	//char  user[20] = { 0 };
-	//char  passwd[20] = { 0 };
-	//char  dbname[20] = { 0 };
-    //unsigned short port = 3306;
-	//cout << "first,I want to get some details about your mysql which you will connect" << endl;
-    ////cout << "input your mysql host:" << ""; cin >> host;
-	//cout << "input your mysql user name:" << ""; cin >> user;
-	//cout << "input your mysql password:" << ""; cin >> passwd;
-	//cout << "input your mysql database name:" << ""; cin >> dbname;
-
-    //char* -> char []
-    char* host = "localhost";
-    char arr_host[20];
-    strcpy(arr_host,host);
-
-    char* usr = "root";
-    char arr_usr[20];
-    strcpy(arr_usr,usr);
-
-    char* pwd = "123456";
-    char arr_pwd[20];
-    strcpy(arr_pwd,pwd);
-
-    char* dbname = "test_sdk";
-    char arr_dbname[20];
-    strcpy(arr_dbname,dbname);
-
-
-
+    
+    char arr_host[20]= "localhost";
+    char arr_usr[20]= "root";
+    char arr_pwd[20]= "123456";
+    char arr_dbname[20]="test_sdk";
     ERR_CODE ret = sdk_connectdb(_handle_,sdk_Sethost(_handle_,arr_host),sdk_Setuser(_handle_,arr_usr),sdk_Setpwd(_handle_,arr_pwd),sdk_Setdbname(_handle_,arr_dbname),sdk_Setport(_handle_,3306),sdk_Setflag(_handle_,0));
-
-    if(ret == ERR_SUCCESS)
+    if(ret == ERR_SUCCESS){
         cout << "connect mysql success!" << endl;
-    else{
-        cout << "connect mysql success!" << endl;
-        goto democonncet;
+        return true;
     }
-}
-
-void create_database(){
-    std::string str = "test1_sdk"; 
-    ERR_CODE ret = sdk_createdatabase(_handle_,str);
-    if(ret != ERR_SUCCESS)
-    {
-        cout << "create database failed! " << endl;
+    else{
+        cout << "connect mysql failded!" << endl;
+        return false;
     }
 }
 
 void create_table(){
     std::string st = "testtable";
-
     sdk_deletetable(_handle_,st);
+
     TABLEVECTOR mytable;
     TABLESTRUCT a0;
     a0.field_name = "ID";
     a0.field_type = DBTYPE_ID;
+    a0.table_coding_type = NOTYPE;
     mytable.push_back(a0);
 
     TABLESTRUCT a1;
@@ -104,11 +69,121 @@ void create_table(){
 	}
 }
 
+void insertdata(){
+    ERR_CODE ret;
+	sdk_SwitchDBType(_handle_, UTF8);
+	for (int i = 0; i < 20; ++i)
+	{
+		TableDataMap k;
+		k["filetype"] = "文字";
+		char szbufp[12] = { 0 };
+		sprintf(szbufp, "%d", i);
+		k["fieldata"] = szbufp;
+		k["shuoming"] = "shuoming111";
+		k["shuoming2"] = "shuoming222";
+		ret = sdk_Insert(_handle_, k, "testtable");
+	}
+	ROWS rows;
+	sdk_EasySelect(_handle_, "testtable", rows);
+	ROWS::iterator iter = rows.begin();
+	for (auto row : rows)
+	{
+		//遍历每一列
+		for (auto c : row)
+		{
+			if (c.data) cout << c.data << " ";
+		}
+		cout << endl;
+	}
+	if (ret == ERR_SUCCESS)
+	{
+		cout << "*********************************insert data success*********************************" << endl;
+	}
+	else
+	{
+		cout << "*********************************insert data failed*********************************" << endl;
+	}
+}
+
+void updatedata()
+{
+	TableDataMap k2;
+	k2["filetype"] = "文字";
+	char szbufp[12] = { 0 };
+	sprintf(szbufp, "%d", 6666);
+	k2["fieldata"] = szbufp;
+	k2["shuoming"] = "shuoming111";
+	k2["shuoming2"] = "shuoming222";
+	uint64_t ret = sdk_UpdateData(_handle_, k2, "testtable", "Num", "9");
+	
+	sdk_SelectTable(_handle_, "testtable");
+	sdk_StoreResult(_handle_);
+	while (true)
+	{
+		ROW rowdata;
+		sdk_FetchRow(_handle_, rowdata);
+		if (rowdata.empty())
+		{
+			break;
+		}
+		ROW::iterator iter = rowdata.begin();
+		for (; iter != rowdata.end(); ++iter)
+		{
+			cout << (*iter).data << " ";
+		}
+		cout << endl;
+	}
+	sdk_FreeResult(_handle_);
+	if (ret > 0)
+	{
+		cout << "*********************************update data success*********************************" << endl;
+		cout << "*********************************I change the date in Num9*********************************" << endl;
+	}
+	else
+	{
+		cout << "*********************************update data failed*********************************" << endl;
+	}
+}
+
 int main(){
     std::cout << "wow~" << std::endl;
-    testInit();
+    std::string str = "test_sdk";
+    std::string str1 = "test1_sdk";
+    std::string str2 = "test2_sdk";
+    if(!sdkInit()){
+        return -1;
+    }
 
-    create_database();
+    //delete test1_sdk and test_sdk
+    ERR_CODE ret = sdk_deletedatabase(_handle_,str);
+    if(ret != ERR_SUCCESS){
+        cout << "delete database failed! " << endl;
+		return -1;
+    }
+    else
+        cout << "delete database success " << endl;
+    ERR_CODE ret1 = sdk_deletedatabase(_handle_,str1);
+    if(ret1 != ERR_SUCCESS){
+        cout << "delete database failed! " << endl;
+		return -1;
+    }
+    else
+        cout << "delete database success " << endl;
+    
+    
+    //create_database
+     ERR_CODE ret2 = sdk_createdatabase(_handle_,str2);
+    if(ret2 != ERR_SUCCESS){
+        cout << "cerate database failed! " << endl;
+		return -1;
+    }
+    else
+        cout << "cerate database success " << endl;
+
     create_table();
+    insertdata();
+    //updatedata();
+    sdk_Finit(_handle_);
 
+    return 0;
 }

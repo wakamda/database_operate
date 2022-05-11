@@ -417,6 +417,50 @@ ROW Ctmysql::FetchRow(){
 	printf("return success");
 	return re;
 }
+
+ERR_CODE Ctmysql::EasySelect(std::string &tablename, ROWS &rows){
+	if (tablename.empty() || !(&rows))
+	{
+		printf("return %s", str_err_code[ERR_INVALID_ARG]);
+		return ERR_INVALID_ARG;
+	}
+	string sql = "select * from " + tablename;
+	FreeResult();
+	if (!Query(sql.c_str()))
+		return ERR_FAILED;
+	if (StoreResult() != ERR_SUCCESS)
+		return ERR_FAILED;
+	for (;;)
+	{
+		auto row = FetchRow();
+		if (row.empty())break;
+		rows.push_back(row);
+	}
+	printf("return success");
+	return ERR_SUCCESS;
+}
+
+ERR_CODE Ctmysql::EasyLike(std::string &tablename, std::string &fieldname,std::string &fielddata, ROWS &rows){
+	if (tablename.empty() || fieldname.empty() || fielddata.empty() || !(&rows))
+	{
+		printf("return %s", str_err_code[ERR_INVALID_ARG]);
+		return ERR_INVALID_ARG;
+	}
+	FreeResult();
+	string sql = "select * from " + tablename + " where " + fieldname + " like '%" + fielddata + "%'";
+	if (!Query(sql.c_str()))
+		return ERR_FAILED;
+	if (StoreResult() != ERR_SUCCESS)
+		return ERR_FAILED;
+	for (;;)
+	{
+		auto row = FetchRow();
+		if (row.empty())break;
+		rows.push_back(row);
+	}
+	printf("return success");
+	return ERR_SUCCESS;
+}
 /***********************************************************************
  * underlying operation
 ************************************************************************/

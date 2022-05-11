@@ -97,6 +97,12 @@ class Ctmysql :public Basic_db
 
     //receive a row data
     ROW FetchRow();
+
+    //Simple interface, return select data results, each call to clean up the last result set  
+	ERR_CODE EasySelect(std::string &tablename, ROWS &rows);
+
+	//Simple interface, fuzzy search
+	ERR_CODE EasyLike(std::string &tablename, std::string &fieldname,std::string &fielddata, ROWS &rows);
  
      
 /***********************************************************************

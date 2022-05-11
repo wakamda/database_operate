@@ -15,6 +15,14 @@ typedef  void* TMYSQL_HANDLE;
 ************************************************************************/
 
 /**
+ * @brief check handle
+ * 
+ * @param handle 
+ * @return ERR_CODE 
+ */
+ERR_CODE CHECKHANDLE(TMYSQL_HANDLE handle);
+
+/**
  * @brief create a instance for database
  * 
  * @return TMYSQL_HANDLE 

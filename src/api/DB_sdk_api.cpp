@@ -6,6 +6,11 @@
 #include "DB_sdk_api.h"
 #include "../mysql/Ctmysql.h"
 
+ERR_CODE CHECKHANDLE(TMYSQL_HANDLE handle){
+    if(handle == NULL)
+        return ERR_INVALID_ARG;
+}
+
 TMYSQL_HANDLE sdk_Init(){
     Basic_db* instance = new Ctmysql();
     instance->Init();

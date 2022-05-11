@@ -73,6 +73,12 @@ public:
 
     virtual ROW FetchRow() {};
 
+    //简易接口,返回select的数据结果，每次调用清理上一次的结果集
+	virtual ERR_CODE EasySelect(std::string &tablename, ROWS &rows){};
+
+	//简易接口，模糊查找
+	virtual ERR_CODE EasyLike(std::string &tablename, std::string &fieldname,std::string &fielddata, ROWS &rows){};
+
 protected:
     char* host;
     char* user;

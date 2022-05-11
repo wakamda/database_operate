@@ -10,8 +10,6 @@
 #include <map>
 #include <string.h>
 
-#define CHECKHANDLE(x)     if(x == NULL){return ERR_INVALID_ARG;}
-
 enum TABLE_DATA_TYPE {
 	TABLE_DATA_TYPE_DECIMAL,
 	TABLE_DATA_TYPE_TINY,

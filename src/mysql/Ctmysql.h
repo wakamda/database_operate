@@ -39,19 +39,6 @@ class Ctmysql :public Basic_db
     //Automatic reconnection, not automatic by default
     ERR_CODE SetReconnect(bool isre);
 
-    char * Gethost();
-    char * Sethost(char* newVal);
-    char* Getuser();
-    char* Setuser(char* newVal);
-    char* Getpwd();
-    char* Setpwd(char* newVal);
-    char* Getdbname();
-    char* Setdbname(char* newVal);
-    unsigned short Getport();
-    unsigned short Setport(unsigned short newVal);
-    unsigned long Getflag();
-    unsigned long Setflag(unsigned long newVal);
-
 /************************************************************************
  *  operation
 ************************************************************************/
@@ -80,7 +67,7 @@ class Ctmysql :public Basic_db
     uint64_t UpdateData(TableDataMap &da, std::string &tablename, std::string &where, std::string &idnum);
 
     //select table
-    ERR_CODE SelectTable(std::string &tablename);
+    ERR_CODE SelectFromTable(std::string &tablename);
 
     //select data where like...
     ERR_CODE SelectDataWithX(std::string &tablename, std::string &fieldname, std::string &fielddata);
@@ -124,6 +111,7 @@ private:
     MYSQL *mysql;      //connect mysql pointer 
     MYSQL_RES *result; //result pointer
     MYSQL_ROW row;     //result of select data
+
 };
 
 

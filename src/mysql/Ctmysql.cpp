@@ -103,59 +103,59 @@ ERR_CODE Ctmysql::connectdb(const char* host,const char* user,const char* passwd
     return ERR_SUCCESS;  
 }
 
-char * Ctmysql::Gethost(){
-    return host;
-}
-
-char * Ctmysql::Sethost(char* newVal){
-    host = newVal;
-    return host;
-}
-
-char* Ctmysql::Getuser(){
-    return user;
-}
-
-char* Ctmysql::Setuser(char* newVal){
-    user = newVal;
-    return user;
-}
-
-char* Ctmysql::Getpwd(){
-    return pwd;
-}
-
-char* Ctmysql::Setpwd(char* newVal){
-    pwd = newVal;
-    return pwd;
-}
-
-char* Ctmysql::Getdbname(){
-    return dbname;
-}
-
-char* Ctmysql::Setdbname(char* newVal){
-    dbname = newVal;
-    return dbname;
-}
-
-unsigned short Ctmysql::Getport(){
-    return port;
-}
-
-unsigned short Ctmysql::Setport(unsigned short newVal){
-    port = newVal;
-    return port;
-}
-
-unsigned long Ctmysql::Getflag(){
-    return flag;
-}
-
-unsigned long Ctmysql::Setflag(unsigned long newVal){
-    flag = newVal;
-    return flag;
-}
+//char * Ctmysql::Gethost(){
+//    return host;
+//}
+//
+//char * Ctmysql::Sethost(char* newVal){
+//    host = newVal;
+//    return host;
+//}
+//
+//char* Ctmysql::Getuser(){
+//    return user;
+//}
+//
+//char* Ctmysql::Setuser(char* newVal){
+//    user = newVal;
+//    return user;
+//}
+//
+//char* Ctmysql::Getpwd(){
+//    return pwd;
+//}
+//
+//char* Ctmysql::Setpwd(char* newVal){
+//    pwd = newVal;
+//    return pwd;
+//}
+//
+//char* Ctmysql::Getdbname(){
+//    return dbname;
+//}
+//
+//char* Ctmysql::Setdbname(char* newVal){
+//    dbname = newVal;
+//    return dbname;
+//}
+//
+//unsigned short Ctmysql::Getport(){
+//    return port;
+//}
+//
+//unsigned short Ctmysql::Setport(unsigned short newVal){
+//    port = newVal;
+//    return port;
+//}
+//
+//unsigned long Ctmysql::Getflag(){
+//    return flag;
+//}
+//
+//unsigned long Ctmysql::Setflag(unsigned long newVal){
+//    flag = newVal;
+//    return flag;
+//}
 
 /***********************************************************************
  *  operation
@@ -327,7 +327,7 @@ uint64_t Ctmysql::UpdateData(TableDataMap &da, std::string &tablename, std::stri
 	return mysql_affected_rows(mysql);
 }
 
-ERR_CODE Ctmysql::SelectTable(std::string &tablename){
+ERR_CODE Ctmysql::SelectFromTable(std::string &tablename){
     if(tablename.empty())
         return ERR_INVALID_ARG;
     string sql = "select * from " + tablename;

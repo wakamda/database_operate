@@ -1,31 +1,45 @@
-# db_sdk
-## mysql_sdk
-#### The 5th update:
-**complete**:
+# database-moudle
+## mysql
+Mysql API:
 ```c++
-virtual ERR_CODE EasySelect(std::string &tablename, ROWS &rows){};
-virtual ERR_CODE EasyLike(std::string &tablename, std::string &fieldname,std::string &fielddata, ROWS &rows){};
-```
-**problem still:**
-```c++
-/home/chengtao/Documents/db_sdk/src/api/../mysql/../basic/Basic_db.h: In member function ‘virtual ERR_CODE Basic_db::Init()’:
-/home/chengtao/Documents/db_sdk/src/api/../mysql/../basic/Basic_db.h:12:31: warning: no return statement in function returning non-void [-Wreturn-type]
-   12 |     virtual ERR_CODE Init() { };
+config:
 
-```
-```
-/home/chengtao/Documents/db_sdk/src/api/DB_sdk_api.cpp: In function ‘ERR_CODE sdk_Finit(TMYSQL_HANDLE)’:
-/home/chengtao/Documents/db_sdk/src/api/DB_sdk_api.cpp:24:9: warning: deleting object of polymorphic class type ‘Basic_db’ which has non-virtual destructor might cause undefined behavior [-Wdelete-non-virtual-dtor]
-   24 |  delete phandle;
-```
+TMYSQL_HANDLE sdk_Init();
 
-#### The 6th update:
-**complete:**
-```c++
+ERR_CODE sdk_Finit(TMYSQL_HANDLE handle);
+
+ERR_CODE sdk_connectdb(TMYSQL_HANDLE handle,const char* host,const char* user,const char* pwd,const char* db_name,unsigned short port,unsigned long flag = 0);
+
+ERR_CODE sdk_SwitchDBType(TMYSQL_HANDLE handle,TABLE_CODING_TYPE type = UTF8);
+
+ERR_CODE sdk_SetMysqlOption(TMYSQL_HANDLE handle,MSQL_OPT opt,const void *arg);
+
+ERR_CODE sdk_SetConnectTimeout(TMYSQL_HANDLE handle,int sec);
+
+ERR_CODE sdk_SetReconnect(TMYSQL_HANDLE handle,bool isre);
+
+char* sdk_Gethost(TMYSQL_HANDLE handle);
+
+char* sdk_Sethost(TMYSQL_HANDLE handle,char* newVal);
+
+...
+
+operation:
+
+bool sdk_Query(TMYSQL_HANDLE handle,const char*sql, unsigned long sqllen = 0);
+
+ERR_CODE sdk_createdatabase(TMYSQL_HANDLE handle,std::string dbname);
+
 ERR_CODE sdk_deletedatabase(TMYSQL_HANDLE handle,std::string dbname);
-test.cpp
-```
-**problem still:**
-```
+
+ERR_CODE sdk_createtable(TMYSQL_HANDLE handle,TABLEVECTOR &vector,std::string tablename, TABLE_CODING_TYPE tablecodingtype = UTF8);
+
+ERR_CODE sdk_deletetable(TMYSQL_HANDLE handle,std::string tablename);
+
+ERR_CODE sdk_Insert(TMYSQL_HANDLE handle,TableDataMap &da, std::string tablename);
+
+ERR_CODE sdk_DeleteDataWithId(TMYSQL_HANDLE handle,std::string tablename, std::string idname, std::string idnum);
+
+......
 
 ```

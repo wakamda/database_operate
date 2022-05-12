@@ -6,11 +6,6 @@
 #include "DB_sdk_api.h"
 #include "../mysql/Ctmysql.h"
 
-ERR_CODE CHECKHANDLE(TMYSQL_HANDLE handle){
-    if(handle == NULL)
-        return ERR_INVALID_ARG;
-}
-
 TMYSQL_HANDLE sdk_Init(){
     Basic_db* instance = new Ctmysql();
     instance->Init();
@@ -23,7 +18,6 @@ TMYSQL_HANDLE sdk_Init(){
 }
 
 ERR_CODE sdk_Finit(TMYSQL_HANDLE handle){
-    CHECKHANDLE(handle);
     Basic_db *phandle = reinterpret_cast<Ctmysql*>(handle);
 	phandle->Finit();
 	delete phandle;
@@ -33,27 +27,22 @@ ERR_CODE sdk_Finit(TMYSQL_HANDLE handle){
 }
 
 ERR_CODE sdk_connectdb(TMYSQL_HANDLE handle,const char* host,const char* user,const char* pwd,const char* db_name,unsigned short port,unsigned long flag){
-    CHECKHANDLE(handle);
     return ((Basic_db*)handle)->connectdb(host, user, pwd, db_name,port,flag);
 }
 
 ERR_CODE sdk_SwitchDBType(TMYSQL_HANDLE handle,TABLE_CODING_TYPE type){
-    CHECKHANDLE(handle);
     return ((Basic_db*)handle)->SwitchDBType(type);
 }
 
 ERR_CODE sdk_SetMysqlOption(TMYSQL_HANDLE handle,MSQL_OPT opt,const void* arg){
-    CHECKHANDLE(handle);
     return ((Basic_db*)handle)->SetMysqlOption(opt,arg);
 }
 
 ERR_CODE sdk_SetConnectTimeout(TMYSQL_HANDLE handle,int sec){
-    CHECKHANDLE(handle);
     return ((Basic_db*)handle)->SetConnectTimeout(sec);
 }
 
 ERR_CODE sdk_SetReconnect(TMYSQL_HANDLE handle,bool isre){
-    CHECKHANDLE(handle);
     return ((Basic_db*)handle)->SetReconnect(isre);
 }
 
@@ -110,86 +99,69 @@ unsigned long sdk_Setflag(TMYSQL_HANDLE handle,unsigned long newVal){
 ************************************************************************/
 
 bool sdk_Query(TMYSQL_HANDLE handle,const char* sql, unsigned long sqllen){
-    CHECKHANDLE(handle);
     return ((Basic_db*)handle)->Query(sql,sqllen);
 }
 
 ERR_CODE sdk_createdatabase(TMYSQL_HANDLE handle,std::string dbname){
-    CHECKHANDLE(handle);
     return ((Basic_db*)handle)->createdatabase(dbname);
 }
 
 ERR_CODE sdk_deletedatabase(TMYSQL_HANDLE handle,std::string dbname){
-    CHECKHANDLE(handle);
     return ((Basic_db*)handle)->deletedatabase(dbname);
 }
 
 ERR_CODE sdk_createtable(TMYSQL_HANDLE handle,TABLEVECTOR &vector,std::string tablename, TABLE_CODING_TYPE tablecodingtype){
-    CHECKHANDLE(handle);
     return ((Basic_db*)handle)->createtable(vector, tablename, tablecodingtype);
 }
 
 ERR_CODE sdk_deletetable(TMYSQL_HANDLE handle,std::string tablename){
-    CHECKHANDLE(handle);
     return ((Basic_db*)handle)->deletetable(tablename);
 }
 
 ERR_CODE sdk_Insert(TMYSQL_HANDLE handle,TableDataMap &da, std::string tablename){
-    CHECKHANDLE(handle);
     return ((Basic_db*)handle)->Insert(da,tablename);
 }
 
 ERR_CODE sdk_DeleteDataWithId(TMYSQL_HANDLE handle,std::string tablename, std::string idname, std::string idnum){
-    CHECKHANDLE(handle);
     return ((Basic_db*)handle)->DeleteDataWithId(tablename,idname,idnum);
 }
 
 ERR_CODE sdk_DeleteDataLikeWithFieldname(TMYSQL_HANDLE handle,std::string tablename, std::string fieldname, std::string fielddata){
-    CHECKHANDLE(handle);
     return ((Basic_db*)handle)->DeleteDataLikeWithFieldname(tablename,fieldname,fielddata);
 }
 
 uint64_t sdk_UpdateData(TMYSQL_HANDLE handle,TableDataMap &da, std::string tablename, std::string where, std::string idnum){
-    CHECKHANDLE(handle);
     return ((Basic_db*)handle)->UpdateData(da,tablename,where,idnum);
 }
 
 ERR_CODE sdk_SelectFromTable(TMYSQL_HANDLE handle,std::string tablename){
-    CHECKHANDLE(handle);
     return ((Basic_db*)handle)->SelectFromTable(tablename);
 }
 
 ERR_CODE sdk_SelectDataWithX(TMYSQL_HANDLE handle,std::string tablename, std::string fieldname, std::string fielddata){
-    CHECKHANDLE(handle);
     return ((Basic_db*)handle)->SelectDataWithX(tablename,fieldname,fielddata);
 }
 
 ERR_CODE sdk_StoreResult(TMYSQL_HANDLE handle){
-    CHECKHANDLE(handle);
     return ((Basic_db*)handle)->StoreResult();
 }
 
 ERR_CODE sdk_UseResult(TMYSQL_HANDLE handle){
-    CHECKHANDLE(handle);
     return ((Basic_db*)handle)->UseResult();
 }
 
 ERR_CODE sdk_FreeResult(TMYSQL_HANDLE handle){
-    CHECKHANDLE(handle);
     return ((Basic_db*)handle)->FreeResult();
 }
 
 ROW sdk_FetchRow(TMYSQL_HANDLE handle, ROW &row){
-    CHECKHANDLE(handle);
     return ((Basic_db*)handle)->FetchRow();
 }
 
 ERR_CODE sdk_EasySelect(TMYSQL_HANDLE handle,std::string tablename, ROWS &rows){
-    CHECKHANDLE(handle);
     return ((Basic_db*)handle)->EasySelect(tablename,rows);
 }
 
 ERR_CODE sdk_EasyLike(TMYSQL_HANDLE handle,std::string tablename, std::string fieldname,std::string fielddata, ROWS &rows){
-    CHECKHANDLE(handle);
     return ((Basic_db*)handle)->EasyLike(tablename,fieldname,fielddata,rows);
 }

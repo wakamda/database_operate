@@ -86,7 +86,7 @@ void insertdata(){
 	}
 	ROWS rows;
 	sdk_EasySelect(_handle_, "testtable", rows);
-	ROWS::iterator iter = rows.begin();
+	rows.begin();
 	for (auto row : rows)
 	{
 		//遍历每一列

@@ -103,64 +103,9 @@ ERR_CODE Ctmysql::connectdb(const char* host,const char* user,const char* passwd
     return ERR_SUCCESS;  
 }
 
-//char * Ctmysql::Gethost(){
-//    return host;
-//}
-//
-//char * Ctmysql::Sethost(char* newVal){
-//    host = newVal;
-//    return host;
-//}
-//
-//char* Ctmysql::Getuser(){
-//    return user;
-//}
-//
-//char* Ctmysql::Setuser(char* newVal){
-//    user = newVal;
-//    return user;
-//}
-//
-//char* Ctmysql::Getpwd(){
-//    return pwd;
-//}
-//
-//char* Ctmysql::Setpwd(char* newVal){
-//    pwd = newVal;
-//    return pwd;
-//}
-//
-//char* Ctmysql::Getdbname(){
-//    return dbname;
-//}
-//
-//char* Ctmysql::Setdbname(char* newVal){
-//    dbname = newVal;
-//    return dbname;
-//}
-//
-//unsigned short Ctmysql::Getport(){
-//    return port;
-//}
-//
-//unsigned short Ctmysql::Setport(unsigned short newVal){
-//    port = newVal;
-//    return port;
-//}
-//
-//unsigned long Ctmysql::Getflag(){
-//    return flag;
-//}
-//
-//unsigned long Ctmysql::Setflag(unsigned long newVal){
-//    flag = newVal;
-//    return flag;
-//}
-
 /***********************************************************************
  *  operation
 ************************************************************************/
-
 bool Ctmysql::Query(const char*sql, unsigned long sqllen)
 {
     if (!mysql)
@@ -192,7 +137,7 @@ bool Ctmysql::Query(const char*sql, unsigned long sqllen)
 
 ERR_CODE Ctmysql::createdatabase(std::string &dbname){
     if(dbname.empty()){
-        cout << "return" << str_err_code[ERR_INVALID_ARG] << endl;
+        cout << "return" <<  str_err_code[ERR_INVALID_ARG] << endl;
         return ERR_INVALID_ARG;
     }
     std::string queryStr = "create database if not exists `"+dbname+"`";

@@ -6,68 +6,204 @@
 #ifndef _DATATYPE_H
 #define _DATATYPE_H
 
-#include "DBDataType.h"
-#include "DBTableType.h"
+#include "MysqlType.h"
 
-enum MSQL_OPT {
-	MSQL_OPT_CONNECT_TIMEOUT,
-	MSQL_OPT_COMPRESS,
-	MSQL_OPT_NAMED_PIPE,
-	MSQL_INIT_COMMAND,
-	MSQL_READ_DEFAULT_FILE,
-	MSQL_READ_DEFAULT_GROUP,
-	MSQL_SET_CHARSET_DIR,
-	MSQL_SET_CHARSET_NAME,
-	MSQL_OPT_LOCAL_INFILE,
-	MSQL_OPT_PROTOCOL,
-	MSQL_SHARED_MEMORY_BASE_NAME,
-	MSQL_OPT_READ_TIMEOUT,
-	MSQL_OPT_WRITE_TIMEOUT,
-	MSQL_OPT_USE_RESULT,
-	MSQL_REPORT_DATA_TRUNCATION,
-	MSQL_OPT_RECONNECT,
-	MSQL_PLUGIN_DIR,
-	MSQL_DEFAULT_AUTH,
-	MSQL_OPT_BIND,
-	MSQL_OPT_SSL_KEY,
-	MSQL_OPT_SSL_CERT,
-	MSQL_OPT_SSL_CA,
-	MSQL_OPT_SSL_CAPATH,
-	MSQL_OPT_SSL_CIPHER,
-	MSQL_OPT_SSL_CRL,
-	MSQL_OPT_SSL_CRLPATH,
-	MSQL_OPT_CONNECT_ATTR_RESET,
-	MSQL_OPT_CONNECT_ATTR_ADD,
-	MSQL_OPT_CONNECT_ATTR_DELETE,
-	MSQL_SERVER_PUBLIC_KEY,
-	MSQL_ENABLE_CLEARTEXT_PLUGIN,
-	MSQL_OPT_CAN_HANDLE_EXPIRED_PASSWORDS,
-	MSQL_OPT_MAX_ALLOWED_PACKET,
-	MSQL_OPT_NET_BUFFER_LENGTH,
-	MSQL_OPT_TLS_VERSION,
-	MSQL_OPT_SSL_MODE,
-	MSQL_OPT_GET_SERVER_PUBLIC_KEY,
-	MSQL_OPT_RETRY_COUNT,
-	MSQL_OPT_OPTIONAL_RESULTSET_METADATA,
-	MSQL_OPT_SSL_FIPS_MODE
-};
+#include <string>
+#include <vector>
+#include <map>
 
-// error number
+/*********************************ERR_CODE*****************************/
 typedef enum{
     ERR_SUCCESS = 0,
     ERR_FAILED,
-    ERR_UNSUPPORT_CONNAND,
     ERR_INVALID_ARG,
     ERR_INVALID_DATA
 }ERR_CODE;
 
-//printf error number
-static const char* str_err_code[30] ={
+static const char* str_err_code[] ={
     "ERR_SUCCESS",
     "ERR_FAILED",
-    "ERR_UNSUPPORT_CONNAND",
     "ERR_INVALID_ARG",
     "ERR_INVALID_DATA"
 };
+/*********************************table********************************/
+//table type
+typedef enum{
+    UTF8 = 0,
+    GBK,
+    NOTYPE
+}TABLE_CODING_TYPE;
+
+//table field type
+enum TABLE_FIELD_TYPE {
+	DBTYPE_INT = 0,
+	DBTYPE_VARCHAR,
+	DBTYPE_DATETIME,
+	DBTYPE_BLOB,
+	DBTYPE_BINARY,
+	DBTYPE_LONGBLOB,
+	DBTYPE_MEDIUMBLOB,
+	DBTYPE_TINYBLOB,//255
+	DBTYPE_VARBINARY,
+	DBTYPE_DATA,
+	DBTYPE_TIME,
+	DBTYPE_TIMESTAMP,
+	DBTYPE_YEAR,
+	DBTYPE_GEOMETRY,
+	DBTYPE_GEOMETRYCOLLECTION,
+	DBTYPE_LINESTRING,
+	DBTYPE_MULTILINESTRING,
+	DBTYPE_MULTIPOINT,
+	DBTYPE_POINT,
+	DBTYPE_POLYGON,
+	DBTYPE_BIGINT,
+	DBTYPE_DECIMAL,
+	DBTYPE_DOUBLE,
+	DBTYPE_FLOAT,
+	DBTYPE_MEDIUMINT,
+	DBTYPE_REAL,
+	DBTYPE_SMALLINT,
+	DBTYPE_TINYINT,
+	DBTYPE_CHAR,
+	DBTYPE_JSON,
+	DBTYPE_NCHAR,
+	DBTYPE_NVARCHAR,
+	DBTYPE_LONGTEXT,
+	DBTYPE_MEDIUMTEXT,
+	DBTYPE_TEXT,
+	DBTYPE_TINYTEXT,
+	DBTYPE_BIT,
+	DBTYPE_BOOLEAN,
+	DBTYPE_ENUM,
+	DBTYPE_SET,
+	DBTYPE_ID
+};
+
+//TABLE_FIELD_TYPE string
+static const char* str_table_field_type[41] = {
+    "INT",
+    "VARCHAR",
+    "DATETIME",
+    "BLOB",//65K
+    "BINARY",
+    "LONGBLOB",//4G
+    "MEDIUMBLOB",//16MB
+    "TINYBLOB",//255
+    "VARBINARY",
+    "DATA",
+    "TIME",
+    "TIMESTAMP",
+    "YEAR",
+    "GEOMETRY",
+    "GEOMETRYCOLLECTION",
+    "LINESTRING",
+    "MULTILINESTRING",
+    "MULTIPOINT",
+    "POINT",
+    "POLYGON",
+    "BIGINT",
+    "DECIMAL",
+    "DOUBLE",
+    "FLOAT",
+    "MEDIUMINT",
+    "REAL",
+    "SMALLINT",
+    "TINYINT",
+    "CHAR",
+    "JSON",
+    "NCHAR",
+    "NVARCHAR",
+    "LONGTEXT",
+    "MEDIUMTEXT",
+    "TEXT",
+    "TINYTEXT",
+    "BIT",
+    "BOOLEAN",
+    "ENUM",
+    "SET",
+    "INT AUTO_INCREMENT"//自增ID
+};
+
+enum TABLE_DATA_TYPE {
+	TABLE_DATA_TYPE_DECIMAL,
+	TABLE_DATA_TYPE_TINY,
+	TABLE_DATA_TYPE_SHORT,
+	TABLE_DATA_TYPE_LONG,
+	TABLE_DATA_TYPE_FLOAT,
+	TABLE_DATA_TYPE_DOUBLE,
+	TABLE_DATA_TYPE_NULL,
+	TABLE_DATA_TYPE_TIMESTAMP,
+	TABLE_DATA_TYPE_LONGLONG,
+	TABLE_DATA_TYPE_INT24,
+	TABLE_DATA_TYPE_DATE,
+	TABLE_DATA_TYPE_TIME,
+	TABLE_DATA_TYPE_DATETIME,
+	TABLE_DATA_TYPE_YEAR,
+	TABLE_DATA_TYPE_NEWDATE, /**< Internal to MySQL. Not used in protocol */
+	TABLE_DATA_TYPE_VARCHAR,
+	TABLE_DATA_TYPE_BIT,
+	TABLE_DATA_TYPE_TIMESTAMP2,
+	TABLE_DATA_TYPE_DATETIME2, /**< Internal to MySQL. Not used in protocol */
+	TABLE_DATA_TYPE_TIME2,     /**< Internal to MySQL. Not used in protocol */
+	TABLE_DATA_TYPE_JSON = 245,
+	TABLE_DATA_TYPE_NEWDECIMAL = 246,
+	TABLE_DATA_TYPE_ENUM = 247,
+	TABLE_DATA_TYPE_SET = 248,
+	TABLE_DATA_TYPE_TINY_BLOB = 249,
+	TABLE_DATA_TYPE_MEDIUM_BLOB = 250,
+	TABLE_DATA_TYPE_LONG_BLOB = 251,
+	TABLE_DATA_TYPE_BLOB = 252,
+	TABLE_DATA_TYPE_VAR_STRING = 253,
+	TABLE_DATA_TYPE_STRING = 254,
+	TABLE_DATA_TYPE_GEOMETRY = 255
+};
+
+//table construct
+typedef struct{
+    std::string        field_name;
+    TABLE_FIELD_TYPE   field_type;
+    TABLE_CODING_TYPE  table_coding_type;
+    int                field_len = 0;
+}TABLESTRUCT, *LPTABLESTRUCT;
+
+//table constrcuction used for create table
+typedef std::vector<TABLESTRUCT>   TABLEVECTOR;
+
+/*********************************data********************************/
+
+//data struct type
+struct Table_Data
+{  
+	Table_Data(const char* data = 0)
+	{
+		this->type = TABLE_DATA_TYPE_STRING;
+		if (!data)return;
+		this->data = data;
+		this->size = (unsigned int)strlen(data);
+	}
+	Table_Data(const uint32_t *d)
+	{
+		this->type = TABLE_DATA_TYPE_LONG;
+		this->data = (const char*)d;
+		this->size = sizeof(uint32_t);
+	}
+	const char * data = 0;
+	unsigned int size = 0;
+	TABLE_DATA_TYPE type;
+};
+
+//插入和更新数据的数据结构,string字段名称,Table_Data字段数据
+typedef std::map <std::string, Table_Data>		TableDataMap;
+
+//存放数据库内一行数据的容器，容器元素为每个域的值
+typedef std::vector<Table_Data>					ROW;
+
+//数据列表, 在使用简易查询接口时会一次性获取所有查询的数据。容器内元素为数据库内的一行数据
+typedef std::vector<ROW>					ROWS;
+
+
+
+
+
 
 #endif 

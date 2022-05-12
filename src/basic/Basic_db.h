@@ -6,7 +6,12 @@
 class Basic_db
 {
 public:
-    Basic_db() {};
+    Basic_db() {
+        m_host = new char [20];
+        m_user = new char [20];
+        m_pwd = new char [20];
+        m_dbname = new char [20];
+    };
     virtual ~Basic_db(){};
 /********************************************************************************
  * database config

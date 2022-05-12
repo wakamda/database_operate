@@ -32,23 +32,23 @@ public:
     //Automatic reconnection, not automatic by default
     virtual ERR_CODE SetReconnect(bool isre) = 0;
     
-    char * Gethost() {return host;};
-    char * Sethost(char* newVal) {host = newVal;return host;};
+    char * Gethost() {return m_host;};
+    char * Sethost(char* newVal) {m_host = newVal;return m_host;};
     
-    char* Getuser() {return user;};
-    char* Setuser(char* newVal){user = newVal;return user;};
+    char* Getuser() {return m_user;};
+    char* Setuser(char* newVal){m_user = newVal;return m_user;};
     
-    char* Getpwd(){return pwd;};
-    char* Setpwd(char* newVal){pwd = newVal;return pwd;};
+    char* Getpwd(){return m_pwd;};
+    char* Setpwd(char* newVal){m_pwd = newVal;return m_pwd;};
     
-    char* Getdbname(){return dbname;};
-    char* Setdbname(char* newVal){ dbname = newVal;return dbname;};
+    char* Getdbname(){return m_dbname;};
+    char* Setdbname(char* newVal){ m_dbname = newVal;return m_dbname;};
     
-    unsigned short Getport(){return port;};
-    unsigned short Setport(unsigned short newVal){port = newVal;return port;};
+    unsigned short Getport(){return m_port;};
+    unsigned short Setport(unsigned short newVal){m_port = newVal;return m_port;};
     
-    unsigned long Getflag(){return flag;};
-    unsigned long Setflag(unsigned long newVal){flag = newVal;return flag;};   
+    unsigned long Getflag(){return m_flag;};
+    unsigned long Setflag(unsigned long newVal){m_flag = newVal;return m_flag;};   
 
 /********************************************************************************
  * database operation
@@ -100,12 +100,12 @@ public:
 	virtual ERR_CODE EasyLike(std::string &tablename, std::string &fieldname,std::string &fielddata, ROWS &rows) = 0;
 
 protected:
-    char* host;
-    char* user;
-    char* pwd;
-    char* dbname;
-    unsigned short port;
-    unsigned long flag;
+    char* m_host;
+    char* m_user;
+    char* m_pwd;
+    char* m_dbname;
+    unsigned short m_port;
+    unsigned long m_flag;
 };
 
 #endif //_BASIC_DB_H

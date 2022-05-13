@@ -7,7 +7,6 @@
 #define _DATATYPE_H
 
 #include "MysqlType.h"
-
 #include <string>
 #include <vector>
 #include <map>
@@ -20,7 +19,7 @@ typedef enum{
     ERR_INVALID_DATA
 }ERR_CODE;
 
-static const char* str_err_code[] ={
+static const char* str_err_code[30] ={
     "ERR_SUCCESS",
     "ERR_FAILED",
     "ERR_INVALID_ARG",
@@ -124,6 +123,20 @@ static const char* str_table_field_type[41] = {
     "INT AUTO_INCREMENT"//自增ID
 };
 
+//table construct
+typedef struct{
+    std::string        field_name;
+    TABLE_FIELD_TYPE   field_type;
+    TABLE_CODING_TYPE  table_coding_type;
+    int                field_len = 0;
+}TABLESTRUCT, *LPTABLESTRUCT;
+
+//table constrcuction used for create table
+typedef std::vector<TABLESTRUCT>   TABLEVECTOR;
+
+/*********************************data********************************/
+
+//table data type
 enum TABLE_DATA_TYPE {
 	TABLE_DATA_TYPE_DECIMAL,
 	TABLE_DATA_TYPE_TINY,
@@ -158,19 +171,6 @@ enum TABLE_DATA_TYPE {
 	TABLE_DATA_TYPE_GEOMETRY = 255
 };
 
-//table construct
-typedef struct{
-    std::string        field_name;
-    TABLE_FIELD_TYPE   field_type;
-    TABLE_CODING_TYPE  table_coding_type;
-    int                field_len = 0;
-}TABLESTRUCT, *LPTABLESTRUCT;
-
-//table constrcuction used for create table
-typedef std::vector<TABLESTRUCT>   TABLEVECTOR;
-
-/*********************************data********************************/
-
 //data struct type
 struct Table_Data
 {  
@@ -200,10 +200,5 @@ typedef std::vector<Table_Data>					ROW;
 
 //数据列表, 在使用简易查询接口时会一次性获取所有查询的数据。容器内元素为数据库内的一行数据
 typedef std::vector<ROW>					ROWS;
-
-
-
-
-
 
 #endif 

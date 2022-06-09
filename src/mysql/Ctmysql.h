@@ -70,6 +70,8 @@ class Ctmysql :public Basic_db
     //select table
     ERR_CODE SelectFromTable(std::string &tablename);
 
+
+
     //select data where like...
     ERR_CODE SelectDataWithX(std::string &tablename, std::string &fieldname, std::string &fielddata);
 

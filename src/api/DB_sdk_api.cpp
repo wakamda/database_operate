@@ -9,11 +9,6 @@
 TMYSQL_HANDLE sdk_Init(){
     Basic_db* instance = new Ctmysql();
     instance->Init();
-    if(instance == NULL)
-    {
-        std::cout << "sdk init failed! Can not create instance!\n" << std::endl;
-    }
-    std::cout << "sdk init success! Instance = " << instance << std::endl;
     return reinterpret_cast<TMYSQL_HANDLE>(instance);
 }
 

@@ -6,14 +6,18 @@
 #include<iostream>
 #include<string>
 #include "Ctmysql.h"
-#include "../common/Log.h"
+#include "../basic/Log.h"
 
+#define LOG_TAG "database"
 using namespace std;
+
 
 /************************************************************************
  *  config
 ************************************************************************/
 ERR_CODE Ctmysql::SwitchDBType(TABLE_CODING_TYPE tablecodingtype){
+	ALOGV(">>> %s", __PRETTY_FUNCTION__);
+
     bool bresult = false;
 	string stype;
 	switch (tablecodingtype)
@@ -35,20 +39,21 @@ ERR_CODE Ctmysql::SwitchDBType(TABLE_CODING_TYPE tablecodingtype){
 	default:
         break;
 	}
-	Tprint("switchtype to stype.c_str() return ",str_err_code[bresult ? ERR_SUCCESS : ERR_FAILED]);
+	ALOGV("switchtype to %s return %s\n", stype.c_str(), str_err_code[bresult ? ERR_SUCCESS : ERR_FAILED]);
+	ALOGV("<<< %s", __PRETTY_FUNCTION__);
 	return bresult ? ERR_SUCCESS : ERR_FAILED;
 }
 
 ERR_CODE Ctmysql::SetMysqlOption(MSQL_OPT opt,const void *arg){
     if (!mysql)
 	{
-		Tprint("Option failed:mysql is NULL" );
+		ALOGE("Option failed:mysql is NULL" );
 		return ERR_FAILED;
 	}
 	int re = mysql_options(mysql, (mysql_option)opt, arg);
 	if (re != 0)
 	{
-		Tprint("mysql_options failed!error is:%s" , mysql_error(mysql) );
+		ALOGE("mysql_options failed!error is:%s" , mysql_error(mysql) );
 		return ERR_FAILED;
 	}
 	return ERR_SUCCESS;
@@ -63,45 +68,54 @@ ERR_CODE Ctmysql::SetReconnect(bool isre){
 }
 
 ERR_CODE Ctmysql::Init(){
+	ALOGV(">>> %s", __PRETTY_FUNCTION__);
     Finit();
-    Tprint("mysql Init " );
     mysql=mysql_init(NULL);
     if(mysql==NULL)
     {
-        cerr << "mysql_init failed!" << endl;
+        ALOGE("mysql_init failed!");
         return ERR_FAILED;
     }
-    Tprint("mysql_init success, mysql = %p",mysql);
+	ALOGV("<<< %s", __PRETTY_FUNCTION__);
     return ERR_SUCCESS;
 }
 
 ERR_CODE Ctmysql::Finit(){
-    FreeResult();
-
-    if(mysql!=NULL)  
+	ALOGV(">>> %s", __PRETTY_FUNCTION__);
+	//have result
+	if(this->result){
+		//free result failed
+		if(FreeResult()){
+			return ERR_FAILED;
+		}
+	}
+    if(mysql!=NULL)
     {
         mysql_close(mysql);
         mysql = NULL;
-        Tprint("mysql Finit success!");
-        return ERR_SUCCESS;
     }
-    Tprint("mysql Finit failed!");
-    return ERR_FAILED;
+	if(mysql!=NULL){
+		ALOGE("mysql Finit failed!");
+		return ERR_FAILED;
+	}
+	ALOGV("<<< %s", __PRETTY_FUNCTION__);
+	return ERR_SUCCESS;
 }
 
 ERR_CODE Ctmysql::connectdb(const char* host,const char* user,const char* passwd,const char* dbname,unsigned short port,unsigned long flag){   
-    if (!mysql && !Init())
+    ALOGV(">>> %s", __PRETTY_FUNCTION__);
+	if (!mysql && !Init())
 	{
-		cerr << "Mysql connect failed! msyql is not init!" << endl;
+		ALOGE("Mysql connect failed! msyql is not init!");
 		return ERR_FAILED;
 	}
     mysql = mysql_real_connect(mysql, host, user, passwd, dbname, port, NULL, flag);
     if(mysql == NULL)
     {  
-        cerr << "Mysql connect failed!" << mysql_error(mysql) << endl;
+        ALOGE("Mysql connect failed!");
 		return ERR_FAILED;  
     }  
-	Tprint("mysql connect success!");
+	ALOGV("<<< %s", __PRETTY_FUNCTION__);
     return ERR_SUCCESS;  
 }
 
@@ -112,68 +126,75 @@ bool Ctmysql::Query(const char*sql, unsigned long sqllen)
 {
     if (!mysql)
 	{
-		Tprint( "Query failed:mysql is NULL" );
+		ALOGE( "Query failed:mysql is NULL" );
 		return false;
 	}
     if (!sql)
 	{
-		Tprint("sql is null" );
+		ALOGE("sql is null" );
 		return false;
 	}
     if (sqllen <= 0)
         sqllen = (unsigned long)strlen(sql);
     if (sqllen <= 0)
 	{
-		Tprint("Query sql is empty or wrong format!" );
+		ALOGE("Query sql is empty or wrong format!" );
 		return false;
 	}
     //Query
     int re =mysql_real_query(mysql, sql, sqllen);
     if (re != 0)
     {
-        Tprint("mysql_real_query failed! error is:%s" , mysql_error(mysql) );
+        ALOGE("mysql_real_query failed! error is:%s" , mysql_error(mysql) );
         return false;
     }
     return true;
 }
 
 ERR_CODE Ctmysql::createdatabase(std::string &dbname){
+	ALOGV(">>> %s", __PRETTY_FUNCTION__);
+	//
     if(dbname.empty()){
-        Tprint("return %s" ,str_err_code[ERR_INVALID_ARG] );
+        ALOGE("return %s" ,str_err_code[ERR_INVALID_ARG] );
         return ERR_INVALID_ARG;
     }
+	//
     std::string queryStr = "create database if not exists `"+dbname+"`";
-    if(Query(queryStr.c_str(),0))
+    if(!Query(queryStr.c_str(),0))
     {
-        queryStr = "use "+dbname;
-        if(Query(queryStr.c_str(),0))
-        {
-            Tprint("database %s create success", dbname.c_str());
-            return ERR_SUCCESS;
-        }
+        ALOGE("database %s create faield in create", dbname.c_str());
+    	return ERR_FAILED;
     }
-    Tprint("database %s create faield", dbname.c_str());
-    return ERR_FAILED;
+	queryStr = "use "+dbname;
+    if(!Query(queryStr.c_str(),0))
+    {
+		ALOGE("database %s create faield in use", dbname.c_str());
+    	return ERR_FAILED;
+    }
+	ALOGV("<<< %s", __PRETTY_FUNCTION__);
+	return ERR_SUCCESS;
 }
 
 ERR_CODE Ctmysql::deletedatabase(std::string &dbname){
+	ALOGV(">>> %s", __PRETTY_FUNCTION__);
     if(dbname.empty()){
-        Tprint("return %s", str_err_code[ERR_INVALID_ARG]);
+        ALOGE("return %s", str_err_code[ERR_INVALID_ARG]);
         return ERR_INVALID_ARG;
     }
     std::string queryStr = "drop database if exists `"+dbname+"`";
-    if(Query(queryStr.c_str(),0))
+    if(!Query(queryStr.c_str(),0))
     {
-        Tprint("database %s delete success", dbname.c_str());
-        return ERR_SUCCESS;
+		ALOGE("database %s delete faield or already exist", dbname.c_str());
+    	return ERR_FAILED; 
     }
-    Tprint("database %s delete faield", dbname.c_str());
-    return ERR_FAILED;
+	ALOGV("<<< %s", __PRETTY_FUNCTION__);
+    return ERR_SUCCESS;
 }
 
 ERR_CODE Ctmysql::createtable(TABLEVECTOR &vector,std::string &tablename, TABLE_CODING_TYPE tablecodingtype){
-    if(vector.empty() || tablename.empty() || tablecodingtype > NOTYPE){
-        Tprint("return %s", str_err_code[ERR_INVALID_ARG]);
+    ALOGV(">>> %s", __PRETTY_FUNCTION__);
+	if(vector.empty() || tablename.empty() || tablecodingtype > NOTYPE){
+        ALOGV("%s", str_err_code[ERR_INVALID_ARG]);
         return ERR_INVALID_ARG;
     }
     string sql = "CREATE TABLE IF NOT EXISTS `" + tablename + "` (";
@@ -185,40 +206,64 @@ ERR_CODE Ctmysql::createtable(TABLEVECTOR &vector,std::string &tablename, TABLE_
 	}
 	sql[sql.size() - 1] = ' ';
 	sql += ")";
-	Tprint("%s\n", sql.c_str());
-	return Query(sql.c_str()) == true ? ERR_SUCCESS : ERR_FAILED;
+	ALOGV("SQL = %s\n", sql.c_str());
+	
+	if(!Query(sql.c_str()))
+	{
+		ALOGE("%s", str_err_code[ERR_FAILED]);
+        return ERR_FAILED;
+	}
+	ALOGV("<<< %s", __PRETTY_FUNCTION__);
+	return ERR_SUCCESS;
 }
 
 ERR_CODE Ctmysql::deletetable(std::string &tablename){
+	ALOGV(">>> %s", __PRETTY_FUNCTION__);
     if (tablename.empty())
 	{
-		Tprint("return %s",str_err_code[ERR_INVALID_ARG]);
+		ALOGE("return %s",str_err_code[ERR_INVALID_ARG]);
 		return ERR_INVALID_ARG;
 	}
 	string sql = "DROP TABLE IF EXISTS `" + tablename + "`";
-	return Query(sql.c_str()) == true ? ERR_SUCCESS : ERR_FAILED;
+	if(!Query(sql.c_str()))
+	{
+		ALOGE("%s", str_err_code[ERR_FAILED]);
+        return ERR_FAILED;
+	}
+	ALOGV("<<< %s", __PRETTY_FUNCTION__);
+	return ERR_SUCCESS;
 }
 
 ERR_CODE Ctmysql::Insert(TableDataMap &da, std::string &tablename){
+
+	//if(!SelectFromTable(tablename))
+	//{
+	//	Tprint("table %s is already here ", tablename);
+	//	return ERR_INVALID_DATA;
+	//}
     if (da.empty() || tablename.empty())
 	{
-		Tprint("return %s", str_err_code[ERR_INVALID_DATA]);
+		ALOGE("%s", str_err_code[ERR_INVALID_DATA]);
 		return ERR_INVALID_DATA;
 	}
 	if (!mysql)
 	{
-		Tprint("Insert failed:mysql is NULL");
+		ALOGE("Insert failed:mysql is NULL");
 		return ERR_FAILED;
 	}
 	string sql = GetAutogenInsertSql(da, tablename);
-	if (sql.empty())
+	if (sql.empty()){
+		ALOGE("%s",str_err_code[ERR_FAILED]);
 		return ERR_FAILED;
-	if (!Query(sql.c_str()))
+	}
+	ALOGV("%s",sql.c_str());
+	if (!Query(sql.c_str())){
 		return ERR_FAILED;
+	}
 	uint64_t num = mysql_affected_rows(mysql);
 	if (num <= 0)
 		return ERR_FAILED;
-	Tprint("return success");
+
 	return ERR_SUCCESS;
 }
 
@@ -226,16 +271,16 @@ ERR_CODE Ctmysql::DeleteDataWithId(std::string &tablename, std::string &idname, 
     //delete FROM A WHERE id = 'B' 
 	if (tablename.empty() || idname.empty() || idnum.empty())
 	{
-		Tprint("return %s", str_err_code[ERR_INVALID_DATA]);
+		ALOGE("return %s", str_err_code[ERR_INVALID_DATA]);
 		return ERR_INVALID_DATA;
 	}
 	string sql = "delete from " + tablename + " where " + idname + "=" + idnum;
 	if (!Query(sql.c_str()))
 	{
-		Tprint("delete faield in table:%s, col:%s, data:%s\n", tablename.c_str(), idname.c_str(), idnum.c_str());
+		ALOGE("delete faield in table:%s, col:%s, data:%s\n", tablename.c_str(), idname.c_str(), idnum.c_str());
 		return ERR_FAILED;
 	}
-	Tprint("delete success in table:%s, col:%s, data:%s\n", tablename.c_str(), idname.c_str(), idnum.c_str());
+	ALOGE("delete success in table:%s, col:%s, data:%s\n", tablename.c_str(), idname.c_str(), idnum.c_str());
 	return ERR_SUCCESS;
 }
 
@@ -243,23 +288,23 @@ ERR_CODE Ctmysql::DeleteDataLikeWithFieldname(std::string &tablename, std::strin
     //DELETE from tablename where 字段名 like '%字段值%'
 	if (tablename.empty() || fieldname.empty() || fielddata.empty())
 	{
-		Tprint("return %s", str_err_code[ERR_INVALID_ARG]);
+		ALOGE("return %s", str_err_code[ERR_INVALID_ARG]);
 		return ERR_INVALID_DATA;
 	}
 	string sql = "delete from " + tablename + " where `" + fieldname + "` like '%" + fielddata + "%'";
 	if (!Query(sql.c_str()))
 	{
-		Tprint("drop faield in table:%s, col:%s, data:%s\n", tablename.c_str(), fieldname.c_str(), fielddata.c_str());
+		ALOGE("drop faield in table:%s, col:%s, data:%s\n", tablename.c_str(), fieldname.c_str(), fielddata.c_str());
 		return ERR_FAILED;
 	}
-	Tprint("drop success in table:%s, col:%s, data:%s\n", tablename.c_str(), fieldname.c_str(), fielddata.c_str());
+	ALOGV("drop success in table:%s, col:%s, data:%s\n", tablename.c_str(), fieldname.c_str(), fielddata.c_str());
 	return ERR_SUCCESS;
 }
 
 uint64_t Ctmysql::UpdateData(TableDataMap &da, std::string &tablename, std::string &where, std::string &idnum){
     if (da.empty() || tablename.empty() || where.empty())
 	{
-		Tprint("return %s",str_err_code[ERR_INVALID_ARG]);
+		ALOGE("return %s",str_err_code[ERR_INVALID_ARG]);
 		return -1;
 	}
 	if (!mysql)return -1;
@@ -268,23 +313,31 @@ uint64_t Ctmysql::UpdateData(TableDataMap &da, std::string &tablename, std::stri
 		return -1;
 	if (!Query(sql.c_str()))
 	{
+		ALOGE("return %s",str_err_code[ERR_FAILED]);
 		return -1;
 	}
-	Tprint("return success\n");
 	return mysql_affected_rows(mysql);
 }
 
 ERR_CODE Ctmysql::SelectFromTable(std::string &tablename){
+	ALOGV(">>> %s",__PRETTY_FUNCTION__);
     if(tablename.empty())
         return ERR_INVALID_ARG;
     string sql = "select * from " + tablename;
-    return (Query(sql.c_str()) == true) ? ERR_SUCCESS:ERR_FAILED;
+	
+	if(!Query(sql.c_str()))
+	{
+		ALOGE("%s",str_err_code[ERR_FAILED]);
+		return ERR_FAILED;
+	}
+	ALOGV("<<< %s",__PRETTY_FUNCTION__);
+    return ERR_SUCCESS;
 }
 
 ERR_CODE Ctmysql::SelectDataWithX(std::string &tablename, std::string &fieldname, std::string &fielddata){
     if (tablename.empty() || fieldname.empty() || fielddata.empty())
 	{
-		Tprint("return %s", str_err_code[ERR_INVALID_ARG]);
+		ALOGV("return %s", str_err_code[ERR_INVALID_ARG]);
 		return ERR_INVALID_ARG;
 	}
 	string sql = "select * from " + tablename + " where " + fieldname + " like '%" + fielddata + "%'";
@@ -292,32 +345,34 @@ ERR_CODE Ctmysql::SelectDataWithX(std::string &tablename, std::string &fieldname
 }
 
 ERR_CODE Ctmysql::StoreResult(){
+	ALOGV(">>> %s",__PRETTY_FUNCTION__);
     if (!mysql)
 	{
-		Tprint("StoreResult failed:mysql is NULL" );
+		ALOGE("StoreResult failed:mysql is NULL" );
 		return ERR_FAILED;
 	}
 	FreeResult();
 	result = mysql_store_result(mysql);
 	if (!result)
 	{
-		Tprint("mysql_store_result failed!error is:%s", mysql_error(mysql));
+		ALOGE("mysql_store_result failed!error is:%s", mysql_error(mysql));
 		return ERR_FAILED;
 	}
+	ALOGV("<<< %s",__PRETTY_FUNCTION__);
 	return ERR_SUCCESS;
 }
 
 ERR_CODE Ctmysql::UseResult(){
     if (!mysql)
 	{
-		Tprint("UseResult failed:mysql is NULL");
+		ALOGE("UseResult failed:mysql is NULL");
 		return ERR_FAILED;
 	}
 	FreeResult();
 	result = mysql_use_result(mysql);
 	if (!result)
 	{
-		Tprint("mysql_use_result failed!erorr is:%s", mysql_error(mysql));
+		ALOGE("mysql_use_result failed!erorr is:%s", mysql_error(mysql));
 		return ERR_FAILED;
 	}
 	return ERR_SUCCESS;
@@ -325,26 +380,28 @@ ERR_CODE Ctmysql::UseResult(){
 
 ERR_CODE Ctmysql::FreeResult()
 {
-	if (result)
-	{
-		mysql_free_result(result);
-		result = NULL;
-		return ERR_SUCCESS;
+	ALOGV(">>> %s", __PRETTY_FUNCTION__);
+	mysql_free_result(result);
+	result = NULL;
+	if(this->result){
+		ALOGE("mysql_free_result failed!");
+		return ERR_FAILED;
 	}
-	return ERR_FAILED;
+	ALOGV("<<< %s", __PRETTY_FUNCTION__);
+	return ERR_SUCCESS;
 }
 
 ROW Ctmysql::FetchRow(){
     ROW re;
 	if (!result)
 	{
-		Tprint("reult is null");
+		ALOGE("reult is null");
 		return re;
 	}
 	MYSQL_ROW row = mysql_fetch_row(result);
 	if (!row)
 	{
-		Tprint("row is null");
+		ALOGE("fun::mysql_fetch_row row is null");
 		return re;
 	}
 	//列数
@@ -361,14 +418,14 @@ ROW Ctmysql::FetchRow(){
 		data.type = (TABLE_DATA_TYPE)field->type;
 		re.push_back(data);
 	}
-	Tprint("return success");
 	return re;
 }
 //简易接口,返回select的数据结果，每次调用清理上一次的结果集
 ERR_CODE Ctmysql::EasySelect(std::string &tablename, ROWS &rows){
+	ALOGV(">>> %s", __PRETTY_FUNCTION__);
 	if (tablename.empty())
 	{
-		Tprint("return %s", str_err_code[ERR_INVALID_ARG]);
+		ALOGE("%s", str_err_code[ERR_INVALID_ARG]);
 		return ERR_INVALID_ARG;
 	}
 	string sql = "select * from " + tablename;
@@ -383,14 +440,14 @@ ERR_CODE Ctmysql::EasySelect(std::string &tablename, ROWS &rows){
 		if (row.empty())break;
 		rows.push_back(row);
 	}
-	Tprint("return success");
+	ALOGV("<<< %s", __PRETTY_FUNCTION__);
 	return ERR_SUCCESS;
 }
 
 ERR_CODE Ctmysql::EasyLike(std::string &tablename, std::string &fieldname,std::string &fielddata, ROWS &rows){
 	if (tablename.empty() || fieldname.empty() || fielddata.empty())
 	{
-		Tprint("return %s", str_err_code[ERR_INVALID_ARG]);
+		ALOGE("return %s", str_err_code[ERR_INVALID_ARG]);
 		return ERR_INVALID_ARG;
 	}
 	FreeResult();
@@ -405,7 +462,6 @@ ERR_CODE Ctmysql::EasyLike(std::string &tablename, std::string &fieldname,std::s
 		if (row.empty())break;
 		rows.push_back(row);
 	}
-	Tprint("return success");
 	return ERR_SUCCESS;
 }
 /***********************************************************************

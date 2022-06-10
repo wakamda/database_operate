@@ -4,7 +4,15 @@
 //  Implements file of the Ctmysql SDK API
 ///////////////////////////////////////////////////////////
 #include "DB_sdk_api.h"
-#include "../mysql/Ctmysql.h"
+
+
+int SetLogLevel(int level){
+     return log_set_level((Log_Level_t)level);
+}
+
+int GetLogLevel(void){
+     return log_get_level();
+}
 
 TMYSQL_HANDLE sdk_Init(){
     Basic_db* instance = new Ctmysql();

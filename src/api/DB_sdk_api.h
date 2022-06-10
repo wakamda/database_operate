@@ -7,12 +7,34 @@
 #define _DB_SDK_API_H
 
 #include "../common/Datatype.h"
+#include "../mysql/Ctmysql.h"
+#include "../basic/Log.h"
+
+#define ERROR_NO_ERROR                 (0)
+#define ERROR_UNKOWN_ERROR             (-1)
+#define ERROR_API_PARAM_INVALID        (-2)
+#define ERROR_INTERNEL_PARAM_INVALID   (-3)
+#define ERROR_CREATE_CONNECTION_ERR    (-4)
+
+
+typedef enum{
+    LOG_VERBOSE    = 0x00, /*!< VERBOSE */
+    LOG_DEBUG      = 0x01, /*!< DEBUG  */
+    LOG_INFO       = 0x03, /*!< INFO  */ 
+    LOG_WARN       = 0x04, /*!< WARN  */
+    LOG_ERROR      = 0x05, /*!< ERROR  */
+    LOG_FATAL      = 0x06, /*!< FATAL  */
+}DoipLogLevel_t;
 
 typedef  void* TMYSQL_HANDLE;
 
 /************************************************************************
  *  config
 ************************************************************************/
+
+int SetLogLevel(int level);
+
+int GetLogLevel(void);
 
 /**
  * @brief create a instance for database

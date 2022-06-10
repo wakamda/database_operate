@@ -39,7 +39,7 @@ ERR_CODE Ctmysql::SwitchDBType(TABLE_CODING_TYPE tablecodingtype){
 	default:
         break;
 	}
-	ALOGV("switchtype to %s return %s\n", stype.c_str(), str_err_code[bresult ? ERR_SUCCESS : ERR_FAILED]);
+	ALOGV("switchtype to %s return %s", stype.c_str(), str_err_code[bresult ? ERR_SUCCESS : ERR_FAILED]);
 	ALOGV("<<< %s", __PRETTY_FUNCTION__);
 	return bresult ? ERR_SUCCESS : ERR_FAILED;
 }
@@ -206,7 +206,7 @@ ERR_CODE Ctmysql::createtable(TABLEVECTOR &vector,std::string &tablename, TABLE_
 	}
 	sql[sql.size() - 1] = ' ';
 	sql += ")";
-	ALOGV("SQL = %s\n", sql.c_str());
+	ALOGV("SQL = %s", sql.c_str());
 	
 	if(!Query(sql.c_str()))
 	{
@@ -277,10 +277,10 @@ ERR_CODE Ctmysql::DeleteDataWithId(std::string &tablename, std::string &idname, 
 	string sql = "delete from " + tablename + " where " + idname + "=" + idnum;
 	if (!Query(sql.c_str()))
 	{
-		ALOGE("delete faield in table:%s, col:%s, data:%s\n", tablename.c_str(), idname.c_str(), idnum.c_str());
+		ALOGE("delete faield in table:%s, col:%s, data:%s", tablename.c_str(), idname.c_str(), idnum.c_str());
 		return ERR_FAILED;
 	}
-	ALOGE("delete success in table:%s, col:%s, data:%s\n", tablename.c_str(), idname.c_str(), idnum.c_str());
+	ALOGE("delete success in table:%s, col:%s, data:%s", tablename.c_str(), idname.c_str(), idnum.c_str());
 	return ERR_SUCCESS;
 }
 
@@ -294,10 +294,10 @@ ERR_CODE Ctmysql::DeleteDataLikeWithFieldname(std::string &tablename, std::strin
 	string sql = "delete from " + tablename + " where `" + fieldname + "` like '%" + fielddata + "%'";
 	if (!Query(sql.c_str()))
 	{
-		ALOGE("drop faield in table:%s, col:%s, data:%s\n", tablename.c_str(), fieldname.c_str(), fielddata.c_str());
+		ALOGE("drop faield in table:%s, col:%s, data:%s", tablename.c_str(), fieldname.c_str(), fielddata.c_str());
 		return ERR_FAILED;
 	}
-	ALOGV("drop success in table:%s, col:%s, data:%s\n", tablename.c_str(), fieldname.c_str(), fielddata.c_str());
+	ALOGV("drop success in table:%s, col:%s, data:%s", tablename.c_str(), fieldname.c_str(), fielddata.c_str());
 	return ERR_SUCCESS;
 }
 
@@ -398,26 +398,32 @@ ROW Ctmysql::FetchRow(){
 		ALOGE("reult is null");
 		return re;
 	}
+	//hang
 	MYSQL_ROW row = mysql_fetch_row(result);
 	if (!row)
 	{
-		ALOGE("fun::mysql_fetch_row row is null");
-		return re;
+		ALOGW("row has been null or error");
+		//return re;
 	}
-	//列数
-	int num = mysql_num_fields(result);
 
-	unsigned long *lens = mysql_fetch_lengths(result);
-	for (int i = 0; i < num; i++)
-	{
-		Table_Data data;
-		data.data = row[i];
-		data.size = lens[i];
-		//获取列的类型
-		auto field = mysql_fetch_field_direct(result, i);
-		data.type = (TABLE_DATA_TYPE)field->type;
-		re.push_back(data);
-	}
+
+	//lie
+
+	//unsigned int num_fields = mysql_num_fields(result);//lie 5
+	//ALOGV("lie number:%d",num_fields);
+	//unsigned long *lens = mysql_fetch_lengths(result);//size of each lie in one hang
+	//for (unsigned int i = 0; i < num_fields; i++)
+	//{
+	//	Table_Data da;
+	//	da.data = row[i];
+	//	da.size = lens[i];
+	//	//获取列的类型
+	//	auto field = mysql_fetch_field_direct(result, i);
+	//	da.type = (TABLE_DATA_TYPE)field->type;
+	//	re.push_back(da);
+	//}
+
+
 	return re;
 }
 //简易接口,返回select的数据结果，每次调用清理上一次的结果集
@@ -429,17 +435,26 @@ ERR_CODE Ctmysql::EasySelect(std::string &tablename, ROWS &rows){
 		return ERR_INVALID_ARG;
 	}
 	string sql = "select * from " + tablename;
-	FreeResult();
+	//free first
+	if(FreeResult()){
+		ALOGE("FreeResult failed");
+		return ERR_FAILED;
+	}
 	if (!Query(sql.c_str()))
 		return ERR_FAILED;
-	if (StoreResult() != ERR_SUCCESS)
+
+	if (StoreResult())
 		return ERR_FAILED;
+
+	ALOGV(">>> FetchRow()");
+	//fetch one row each time
 	for (;;)
 	{
 		auto row = FetchRow();
 		if (row.empty())break;
 		rows.push_back(row);
 	}
+	ALOGV("<<< FetchRow()");
 	ALOGV("<<< %s", __PRETTY_FUNCTION__);
 	return ERR_SUCCESS;
 }
@@ -450,7 +465,10 @@ ERR_CODE Ctmysql::EasyLike(std::string &tablename, std::string &fieldname,std::s
 		ALOGE("return %s", str_err_code[ERR_INVALID_ARG]);
 		return ERR_INVALID_ARG;
 	}
-	FreeResult();
+	if(!FreeResult()){
+		ALOGE("FreeResult failed");
+		return ERR_FAILED;
+	}
 	string sql = "select * from " + tablename + " where " + fieldname + " like '%" + fielddata + "%'";
 	if (!Query(sql.c_str()))
 		return ERR_FAILED;

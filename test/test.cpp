@@ -5,6 +5,21 @@
 using namespace std;
 static TMYSQL_HANDLE _handle_ = NULL;
 
+int parse_opt(int argc,  char * const argv[]){
+	int c;
+	while ((c = getopt (argc, argv, "v")) != -1){
+		switch (c){
+			case 'v':
+				SetLogLevel( GetLogLevel() - 1 );
+				break;
+			default:
+				break;
+		}
+
+	}
+	return 0;
+}
+
 bool sdkInit(){
     _handle_ = sdk_Init();
     
@@ -76,7 +91,7 @@ bool insertdata(std::string tb){
 		return -1;
 	}
 
-	for (int i = 0; i < 10; ++i)
+	for (int i = 0; i < 2; ++i)
 	{
 		
 		TableDataMap k;
@@ -121,7 +136,7 @@ void updatedata(std::string tb)
 	k2["fieldata"] = szbufp;
 	k2["shuoming"] = "shuoming111";
 	k2["shuoming2"] = "shuoming222";
-	uint64_t ret = sdk_UpdateData(_handle_, k2, tb, "ID", "9");
+	uint64_t ret = sdk_UpdateData(_handle_, k2, tb, "ID", "2");
 	
 	sdk_SelectFromTable(_handle_, tb);
 	sdk_StoreResult(_handle_);
@@ -152,7 +167,9 @@ void updatedata(std::string tb)
 	}
 }
 
-int main(){
+int main(int argc, char * const argv[]){
+	SetLogLevel(LOG_ERROR);
+	parse_opt(argc, argv);
 
     std::string db = "test1db";
 	std::string tb = "testtable";

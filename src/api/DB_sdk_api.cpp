@@ -4,16 +4,19 @@
 //  Implements file of the Ctmysql SDK API
 ///////////////////////////////////////////////////////////
 #include "DB_sdk_api.h"
-#include "../mysql/Ctmysql.h"
+
+
+int SetLogLevel(int level){
+     return log_set_level((Log_Level_t)level);
+}
+
+int GetLogLevel(void){
+     return log_get_level();
+}
 
 TMYSQL_HANDLE sdk_Init(){
     Basic_db* instance = new Ctmysql();
     instance->Init();
-    if(instance == NULL)
-    {
-        std::cout << "sdk init failed! Can not create instance!\n" << std::endl;
-    }
-    std::cout << "sdk init success! Instance = " << instance << std::endl;
     return reinterpret_cast<TMYSQL_HANDLE>(instance);
 }
 

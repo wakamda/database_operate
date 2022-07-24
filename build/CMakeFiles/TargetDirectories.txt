@@ -1,0 +1,4 @@
+/home/chengtao/Documents/github/database_operate/build/CMakeFiles/rebuild_cache.dir
+/home/chengtao/Documents/github/database_operate/build/CMakeFiles/edit_cache.dir
+/home/chengtao/Documents/github/database_operate/build/CMakeFiles/test.dir
+/home/chengtao/Documents/github/database_operate/build/CMakeFiles/db_sdk.dir

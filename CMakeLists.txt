@@ -12,7 +12,8 @@ include_directories(${PROJECT_SOURCE_DIR}/src)
 aux_source_directory(./src/mysql SRC_DIR)
 aux_source_directory(./src/api API_SRC_DIR)
 aux_source_directory(./src/basic LOG_SRC_DIR)
-add_library(db_sdk SHARED ${SRC_DIR} ${API_SRC_DIR} ${LOG_SRC_DIR})
+aux_source_directory(./src/log LOG_DIR)
+add_library(db_sdk SHARED ${SRC_DIR} ${API_SRC_DIR} ${LOG_SRC_DIR} ${LOG_DIR})
 target_link_libraries(db_sdk mysqlclient)
 
 #build exe

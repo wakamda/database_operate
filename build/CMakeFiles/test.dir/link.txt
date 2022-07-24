@@ -1,0 +1,1 @@
+/usr/bin/c++   -Wall -O0 -g -ggdb -fPIC -std=c++0x -g  -rdynamic CMakeFiles/test.dir/test/test.cpp.o  -o test   -L/home/chengtao/Documents/github/database_operate/../build  -Wl,-rpath,/home/chengtao/Documents/github/database_operate/../build:/home/chengtao/Documents/github/database_operate/build libdb_sdk.so -lmysqlclient 

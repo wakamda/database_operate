@@ -6,7 +6,7 @@
 #include<iostream>
 #include<string>
 #include "Ctmysql.h"
-#include "../basic/Log.h"
+#include "../log/Log.h"
 
 #define LOG_TAG "database"
 using namespace std;
@@ -459,6 +459,7 @@ ERR_CODE Ctmysql::EasySelect(std::string &tablename, ROWS &rows){
 	return ERR_SUCCESS;
 }
 
+//模糊查询
 ERR_CODE Ctmysql::EasyLike(std::string &tablename, std::string &fieldname,std::string &fielddata, ROWS &rows){
 	if (tablename.empty() || fieldname.empty() || fielddata.empty())
 	{

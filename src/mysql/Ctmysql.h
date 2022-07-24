@@ -90,7 +90,7 @@ class Ctmysql :public Basic_db
     //Simple interface, return select data results, each call to clean up the last result set  
 	ERR_CODE EasySelect(std::string &tablename, ROWS &rows);
 
-	//Simple interface, fuzzy search
+	//模糊查询
 	ERR_CODE EasyLike(std::string &tablename, std::string &fieldname,std::string &fielddata, ROWS &rows);
  
      

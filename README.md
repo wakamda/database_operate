@@ -1,44 +1,62 @@
 # database-moudle
-## mysql
-Mysql API:
+
+API:
+
 ```c++
+
 config:
 
-TMYSQL_HANDLE sdk_Init();
+//数据库操作模块初始化
+bool dbomInit();
 
-ERR_CODE sdk_Finit(TMYSQL_HANDLE handle);
+//模块退出，内存清除
+ERR_CODE dbomUnInit();
 
-ERR_CODE sdk_connectdb(TMYSQL_HANDLE handle,const char* host,const char* user,const char* pwd,const char* db_name,unsigned short port,unsigned long flag = 0);
+//连接数据库
+ERR_CODE dbomConnectdb(const char* host,const char* user,const char* pwd,const char* db_name,unsigned short port,unsigned long flag = 0);
 
-ERR_CODE sdk_SwitchDBType(TMYSQL_HANDLE handle,TABLE_CODING_TYPE type = UTF8);
+选择
+ERR_CODE dbomSwitchDBType(TABLE_CODING_TYPE type = UTF8);
 
-ERR_CODE sdk_SetMysqlOption(TMYSQL_HANDLE handle,MSQL_OPT opt,const void *arg);
 
-ERR_CODE sdk_SetConnectTimeout(TMYSQL_HANDLE handle,int sec);
+ERR_CODE dbomSetMysqlOption(MSQL_OPT opt,const void *arg);
 
-ERR_CODE sdk_SetReconnect(TMYSQL_HANDLE handle,bool isre);
+设置数据库连接timeout时间
+ERR_CODE dbomSetConnectTimeout(int sec);
 
-char* sdk_Gethost(TMYSQL_HANDLE handle);
+设置重新连接数据库
+ERR_CODE dbomSetReconnect(bool isre);
 
-char* sdk_Sethost(TMYSQL_HANDLE handle,char* newVal);
+获取数据库host
+char* dbomGethost();
+
+设置数据库host
+char* dbomSethost(char* newVal);
 
 ...
 
 operation:
 
-bool sdk_Query(TMYSQL_HANDLE handle,const char*sql, unsigned long sqllen = 0);
+//数据库操作基础接口
+bool dbomQuery(const char*sql, unsigned long sqllen = 0);
 
-ERR_CODE sdk_createdatabase(TMYSQL_HANDLE handle,std::string dbname);
+//创建数据库
+ERR_CODE dbomcreatedatabase(std::string dbname);
 
-ERR_CODE sdk_deletedatabase(TMYSQL_HANDLE handle,std::string dbname);
+//删除数据库
+ERR_CODE dbomdeletedatabase(std::string dbname);
 
-ERR_CODE sdk_createtable(TMYSQL_HANDLE handle,TABLEVECTOR &vector,std::string tablename, TABLE_CODING_TYPE tablecodingtype = UTF8);
+//创建表
+ERR_CODE dbomcreatetable(TABLEVECTOR &vector,std::string tablename, TABLE_CODING_TYPE tablecodingtype = UTF8);
 
-ERR_CODE sdk_deletetable(TMYSQL_HANDLE handle,std::string tablename);
+//删除表
+ERR_CODE dbomdeletetable(std::string tablename);
 
-ERR_CODE sdk_Insert(TMYSQL_HANDLE handle,TableDataMap &da, std::string tablename);
+//插入一条数据
+ERR_CODE dbomInsert(TableDataMap &da, std::string tablename);
 
-ERR_CODE sdk_DeleteDataWithId(TMYSQL_HANDLE handle,std::string tablename, std::string idname, std::string idnum);
+//删除一条数据
+ERR_CODE dbomDeleteDataWithId(std::string tablename, std::string idname, std::string idnum);
 
 ......
 

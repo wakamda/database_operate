@@ -1,9 +1,9 @@
-#include "../src/api/DB_sdk_api.h"
+#include "../src/api/database_operate_moudle_api.h"
 #include <iostream>
 #include <unistd.h>
 
 using namespace std;
-static TMYSQL_HANDLE _handle_ = NULL;
+//static TMYSQL_HANDLE _handle_ = NULL;
 
 int parse_opt(int argc,  char * const argv[]){
 	int c;
@@ -21,13 +21,13 @@ int parse_opt(int argc,  char * const argv[]){
 }
 
 bool sdkInit(){
-    _handle_ = sdk_Init();
+    sdk_Init();
     
     char arr_host[20]= "localhost";
     char arr_usr[20]= "root";
     char arr_pwd[20]= "123456";
     char arr_dbname[20]="mysql";
-    ERR_CODE ret = sdk_connectdb(_handle_,sdk_Sethost(_handle_,arr_host),sdk_Setuser(_handle_,arr_usr),sdk_Setpwd(_handle_,arr_pwd),sdk_Setdbname(_handle_,arr_dbname),sdk_Setport(_handle_,3306),sdk_Setflag(_handle_,0));
+    ERR_CODE ret = sdk_connectdb(sdk_Sethost(arr_host),sdk_Setuser(arr_usr),sdk_Setpwd(arr_pwd),sdk_Setdbname(arr_dbname),sdk_Setport(3306),sdk_Setflag(0));
     if(ret == ERR_SUCCESS)
         return true;
     else{
@@ -36,7 +36,7 @@ bool sdkInit(){
     }
 }
 
-bool create_table(TMYSQL_HANDLE a,std::string st){
+bool create_table(std::string st){
 
     TABLEVECTOR mytable;
     TABLESTRUCT a0;
@@ -70,7 +70,7 @@ bool create_table(TMYSQL_HANDLE a,std::string st){
 	a4.field_len = 128;
 	mytable.push_back(a4);
 
-    ERR_CODE  re = sdk_createtable(_handle_,mytable,st);
+    ERR_CODE  re = sdk_createtable(mytable,st);
     if (re == ERR_SUCCESS)
 	{
 		cout << "create testdb success" << endl;
@@ -87,7 +87,7 @@ bool create_table(TMYSQL_HANDLE a,std::string st){
 
 bool insertdata(std::string tb){
     ERR_CODE ret;
-	if(sdk_SwitchDBType(_handle_, UTF8)){	
+	if(sdk_SwitchDBType( UTF8)){	
 		return -1;
 	}
 
@@ -102,7 +102,7 @@ bool insertdata(std::string tb){
 		k["shuoming"] = "shuoming111";
 		k["shuoming2"] = "shuoming222";
 
-		ret = sdk_Insert(_handle_, k, tb);
+		ret = sdk_Insert( k, tb);
 		if(ret)break;
 	}
 	if (ret)
@@ -112,7 +112,7 @@ bool insertdata(std::string tb){
 	}
 
 	ROWS rows;
-	sdk_EasySelect(_handle_, tb, rows);
+	sdk_EasySelect( tb, rows);
 	rows.begin();
 	for (auto row : rows)
 	{
@@ -136,14 +136,14 @@ void updatedata(std::string tb)
 	k2["fieldata"] = szbufp;
 	k2["shuoming"] = "shuoming111";
 	k2["shuoming2"] = "shuoming222";
-	uint64_t ret = sdk_UpdateData(_handle_, k2, tb, "ID", "2");
+	uint64_t ret = sdk_UpdateData( k2, tb, "ID", "2");
 	
-	sdk_SelectFromTable(_handle_, tb);
-	sdk_StoreResult(_handle_);
+	sdk_SelectFromTable( tb);
+	sdk_StoreResult();
 	while (true)
 	{
 		ROW rowdata;
-		sdk_FetchRow(_handle_, rowdata);
+		sdk_FetchRow( rowdata);
 		if (rowdata.empty())
 		{
 			break;
@@ -155,7 +155,7 @@ void updatedata(std::string tb)
 		}
 		cout << endl;
 	}
-	sdk_FreeResult(_handle_);
+	sdk_FreeResult();
 	if (ret > 0)
 	{
 		cout << "*********************************update data success*********************************" << endl;
@@ -181,7 +181,7 @@ int main(int argc, char * const argv[]){
 
 	//delete testdb
 #if 1
-    ERR_CODE ret = sdk_deletedatabase(_handle_,db);
+    ERR_CODE ret = sdk_deletedatabase(db);
     if(ret != ERR_SUCCESS){
 		return -1;
     }
@@ -191,7 +191,7 @@ int main(int argc, char * const argv[]){
 
 #if 1
 	//create_database
-    ERR_CODE ret2 = sdk_createdatabase(_handle_,db);
+    ERR_CODE ret2 = sdk_createdatabase(db);
     if(ret2 != ERR_SUCCESS){
 		return -1;
     }
@@ -200,12 +200,12 @@ int main(int argc, char * const argv[]){
 #endif
 
 #if 0
-	sdk_deletetable(_handle_,tb);
+	sdk_deletetable(tb);
 #endif
 
 #if 1
 	//create table
-	if(!create_table(_handle_,tb))
+	if(!create_table(tb))
 		return -1;
 #endif
 
@@ -216,7 +216,7 @@ int main(int argc, char * const argv[]){
 #endif
 
 	updatedata(tb);
-    sdk_Finit(_handle_);
+    sdk_Finit();
 
     return 0;
 }

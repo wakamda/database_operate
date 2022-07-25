@@ -1,1 +1,0 @@
-/usr/bin/c++ -fPIC  -Wall -O0 -g -ggdb -fPIC -std=c++0x -g  -shared -Wl,-soname,libdb_sdk.so -o libdb_sdk.so CMakeFiles/db_sdk.dir/src/mysql/Ctmysql.cpp.o CMakeFiles/db_sdk.dir/src/api/database_operate_moudle_api.cpp.o CMakeFiles/db_sdk.dir/src/log/Log.cpp.o  -lmysqlclient 
